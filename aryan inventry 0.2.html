@@ -1,0 +1,5141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Inventory, sales, and workforce management for Zero3Aryans.">
+<meta name="application-name" content="Zero3Aryans Inventry and Sale Manager">
+<meta name="theme-color" content="#f4f6fb">
+<title>Zero3Aryans Inventry and Sale Manager</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/app-icon.svg" type="image/svg+xml">
+
+<style>
+:root {
+    --bg: #f4f6fb;
+    --panel: #ffffff;
+    --panel-alt: #f8fafc;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #5959d9;
+    --primary-strong: #4b4bbd;
+    --shadow: rgba(15, 23, 42, 0.08);
+    --dark-overlay: rgba(0, 0, 0, 0.55);
+    --input-bg: #ffffff;
+}
+
+body.theme-dark {
+    --bg: #0b1120;
+    --panel: #111827;
+    --panel-alt: #0f172a;
+    --text: #edf2ff;
+    --muted: #9aa4b2;
+    --border: #253046;
+    --primary: #7c7cff;
+    --primary-strong: #8f8fff;
+    --shadow: rgba(0, 0, 0, 0.28);
+    --dark-overlay: rgba(2, 6, 23, 0.7);
+    --input-bg: #0f172a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.auth-locked .header {
+    display: none;
+}
+
+.auth-shell {
+    width: min(100% - 32px, 460px);
+    margin: 7vh auto;
+}
+
+.auth-brand {
+    margin-bottom: 20px;
+    color: var(--primary);
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.auth-panel {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+    box-shadow: 0 12px 32px var(--shadow);
+}
+
+.auth-panel h1 {
+    margin: 0 0 8px;
+    font-size: 25px;
+}
+
+.auth-panel p {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.auth-form {
+    display: grid;
+    gap: 12px;
+}
+
+.auth-form input,
+.auth-form select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text);
+}
+.password-input {
+    position: relative;
+    width: 100%;
+}
+.password-input input {
+    padding-right: 68px !important;
+}
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 0;
+    padding: 4px;
+    background: transparent;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.auth-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.auth-link {
+    border: 0;
+    padding: 6px 0;
+    background: transparent;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.auth-notice {
+    display: none;
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--panel-alt);
+    color: var(--text);
+    font-size: 13px;
+}
+
+.auth-notice.visible {
+    display: block;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+.header {
+    background: var(--panel);
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.header-account {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.header-account-label {
+    margin-right: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.header-account strong {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.logo small {
+    display: block;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 20px 16px 100px;
+}
+
+.hero {
+    background: linear-gradient(135deg,#171738,#6666e5);
+    color: white;
+    padding: 25px;
+    border-radius: 25px;
+    margin-bottom: 18px;
+}
+
+.hero small {
+    opacity: .7;
+}
+
+.hero h1 {
+    margin: 7px 0 15px;
+    font-size: 35px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.card {
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 17px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px var(--shadow);
+}
+
+.card-title {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.card-value {
+    font-size: 24px;
+    font-weight: 800;
+    margin-top: 7px;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 18px 0;
+}
+
+.action {
+    border: 0;
+    background: var(--panel);
+    color: var(--text);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: left;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 5px 20px var(--shadow);
+}
+
+.action.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.admin-dashboard-action {
+    grid-column: 1 / -1;
+}
+
+.action-icon {
+    font-size: 25px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.section {
+    margin-top: 25px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-header h2 {
+    font-size: 18px;
+}
+
+button {
+    cursor: pointer;
+}
+
+.primary-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 13px 17px;
+    border-radius: 13px;
+    font-weight: 700;
+}
+
+.secondary-button {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 13px 17px;
+    border-radius: 13px;
+    font-weight: 700;
+}
+
+.search {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    margin-bottom: 12px;
+    outline: none;
+    background: var(--panel);
+    color: var(--text);
+}
+
+.product {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.product-name {
+    font-weight: 800;
+}
+
+.product-info {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    margin-top: 7px;
+}
+
+.green {
+    background: #e7f8ef;
+    color: #087443;
+}
+
+.red {
+    background: #ffebe9;
+    color: #b42318;
+}
+
+.orange {
+    background: #fff2d8;
+    color: #9a6700;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: var(--input-bg);
+    color: var(--text);
+    outline: none;
+}
+
+.two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.total {
+    background: #eeeeff;
+    padding: 18px;
+    border-radius: 17px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total strong {
+    font-size: 26px;
+}
+
+.payment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.payment button {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 16px;
+    font-weight: 800;
+}
+
+.payment button.selected {
+    border: 2px solid var(--primary);
+    background: rgba(89, 89, 217, 0.12);
+    color: var(--primary-strong);
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: var(--dark-overlay);
+    display: flex;
+    align-items: flex-end;
+    z-index: 100;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-box {
+    background: var(--panel);
+    color: var(--text);
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+    padding: 22px;
+    border-radius: 25px 25px 0 0;
+    max-height: 90vh;
+    overflow: auto;
+}
+
+.qr {
+    width: 220px;
+    height: 220px;
+    margin: 20px auto;
+    background:
+    repeating-conic-gradient(
+        #111 0 25%,
+        white 0 50%
+    ) 50% / 18px 18px;
+    border: 10px solid white;
+    box-shadow: 0 0 0 1px #ddd;
+}
+
+.center {
+    text-align: center;
+}
+
+.empty {
+    background: var(--panel);
+    border: 1px dashed var(--border);
+    border-radius: 17px;
+    padding: 35px;
+    text-align: center;
+    color: var(--muted);
+}
+
+@media(max-width:500px) {
+    .cards {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .two {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+}
+
+.admin-shell {
+    position: relative;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100vh - 74px);
+}
+
+.admin-shell.sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-shell.sidebar-collapsed .admin-sidebar {
+    display: none;
+}
+
+.admin-shell.sidebar-collapsed .admin-main {
+    padding-top: 64px;
+}
+
+.admin-sidebar {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 56px 14px 18px;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--muted);
+    font-size: 24px;
+    line-height: 1;
+}
+
+.sidebar-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px 18px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.brand-mark {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), #7c7cff);
+    color: white;
+    font-size: 22px;
+    box-shadow: 0 12px 24px rgba(89, 89, 217, 0.2);
+}
+
+.sidebar-brand small {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.6px;
+}
+
+.sidebar-menu {
+    display: grid;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.sidebar-menu button,
+.sidebar-utility button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    text-align: left;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-weight: 700;
+}
+
+.sidebar-menu button.active {
+    background: rgba(89, 89, 217, 0.12);
+    color: var(--primary);
+}
+
+.sidebar-utility {
+    display: grid;
+    gap: 8px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+body.admin-workspace .header #logoutButton,
+body.admin-workspace .header #settingsButton {
+    display: none;
+}
+
+.admin-main {
+    padding: 20px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.admin-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.admin-action-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.summary-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 22px var(--shadow);
+}
+
+.summary-card .label {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.summary-card .big {
+    margin-top: 12px;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.summary-card .sub {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 22px var(--shadow);
+}
+
+.panel h3 {
+    margin: 0 0 14px;
+    font-size: 18px;
+}
+
+.team-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+}
+
+.team-row:last-child {
+    border-bottom: none;
+}
+
+.team-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.team-id {
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.status-pill.active {
+    background: #eafaf1;
+    color: #136c43;
+}
+
+.status-pill.inactive {
+    background: #fff0ee;
+    color: #b42318;
+}
+
+.mini-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.mini-actions button {
+    border: 1px solid var(--border);
+    background: var(--panel-alt);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.metric-stack {
+    display: grid;
+    gap: 12px;
+}
+
+.metric-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+}
+
+.metric-box strong {
+    font-size: 18px;
+}
+
+.incentive-list,
+.payment-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.payment-transaction-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(130px, 1fr) auto;
+    align-items: center;
+}
+
+.payment-reference-column {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.payment-reference-column small {
+    color: var(--muted);
+}
+
+.incentive-item,
+.payment-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--panel-alt);
+}
+
+.input-stack {
+    display: grid;
+    gap: 10px;
+}
+
+.inline-form {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.password-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.password-box {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr auto auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel-alt);
+}
+
+.password-box input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 10px;
+    background: var(--input-bg);
+    color: var(--text);
+}
+
+.form-button {
+    border: none;
+    border-radius: 12px;
+    padding: 11px 14px;
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+}
+
+.danger-button {
+    border: 1px solid #f5b7b1;
+    background: #fff3f1;
+    color: #b42318;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-weight: 700;
+}
+
+.success-button {
+    border: none;
+    background: #e7f8ef;
+    color: #087443;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-weight: 700;
+}
+
+@media(max-width:800px) {
+    .admin-panel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .inline-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .password-box {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width:520px) {
+    .payment-transaction-row {
+        grid-template-columns: 1fr auto;
+    }
+
+    .payment-reference-column {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <div class="logo">
+            <small>BUSINESS CONTROL</small>
+            Zero3Aryans
+        </div>
+        <div class="header-account" aria-live="polite">
+            <span>
+                <span class="header-account-label">Login as</span>
+                <strong id="headerRole"></strong>
+            </span>
+            <span>
+                <span class="header-account-label">Profile</span>
+                <strong id="headerProfile"></strong>
+            </span>
+        </div>
+    </div>
+
+    <button id="logoutButton"
+        onclick="logout()"
+        style="border:1px solid var(--border);background:var(--panel);font-size:13px;color:var(--text);padding:8px 12px;border-radius:8px;margin-right:8px;">
+        Log out
+    </button>
+
+    <button id="settingsButton"
+        onclick="openSettings()"
+        style="border:none;background:none;font-size:20px;color:var(--text);">
+        ⚙️
+    </button>
+</div>
+
+<div id="app"></div>
+
+<div id="modal" class="modal hidden"></div>
+
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBQVk8yKOYktCyY3dsvP5PiVrWvC9D0PLs",
+    authDomain: "zero3aryans-inventry.firebaseapp.com",
+    projectId: "zero3aryans-inventry",
+    storageBucket: "zero3aryans-inventry.firebasestorage.app",
+    messagingSenderId: "565090963691",
+    appId: "1:565090963691:web:c0413a5b9104a3719faeae",
+    measurementId: "G-6TK785EG7Q"
+};
+
+firebase.initializeApp(firebaseConfig);
+firebase.analytics.isSupported().then(isSupported => {
+    if (isSupported) firebase.analytics();
+}).catch(error => console.warn("Firebase Analytics is unavailable.", error));
+</script>
+
+<script>
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let sales =
+    JSON.parse(localStorage.getItem("sales")) || [];
+
+let inventoryRequests =
+    JSON.parse(localStorage.getItem("inventoryRequests")) || [];
+
+let warehouseStock = JSON.parse(localStorage.getItem("warehouseStock")) || {};
+let workerInventory = JSON.parse(localStorage.getItem("workerInventory")) || {};
+let warehouseMovements = JSON.parse(localStorage.getItem("warehouseMovements")) || [];
+
+let locations =
+    JSON.parse(localStorage.getItem("locations")) || [
+        "Main Store",
+        "Warehouse",
+        "Outlet A",
+        "Field Sale"
+    ];
+
+let workers =
+    JSON.parse(localStorage.getItem("workers")) || [
+        "Assistant",
+        "Manager",
+        "Cashier",
+        "Supervisor"
+    ];
+
+let workerProfiles =
+    JSON.parse(localStorage.getItem("workerProfiles")) || {
+        Assistant: "assistant",
+        Manager: "manager",
+        Cashier: "assistant",
+        Supervisor: "manager"
+    };
+
+let workerStatus =
+    JSON.parse(localStorage.getItem("workerStatus")) || {
+        Assistant: true,
+        Manager: true,
+        Cashier: true,
+        Supervisor: true
+    };
+
+let workerIds =
+    JSON.parse(localStorage.getItem("workerIds")) || {};
+
+let incentiveList =
+    JSON.parse(localStorage.getItem("incentives")) || [
+        { id: 1, title: "Weekend Bonus", amount: 500, note: "Sales target bonus" },
+        { id: 2, title: "Product Discount", amount: 200, note: "Fast delivery reward" }
+    ];
+
+let payrollRecords = JSON.parse(localStorage.getItem("payrollRecords")) || {};
+let payrollHistory = JSON.parse(localStorage.getItem("payrollHistory")) || [];
+
+let activityLog =
+    JSON.parse(localStorage.getItem("activityLog")) || [];
+
+let sessionUser =
+    localStorage.getItem("sessionUser") || "";
+
+let authAccounts = JSON.parse(localStorage.getItem("authAccounts")) || [];
+let adminSubscriptions = JSON.parse(localStorage.getItem("adminSubscriptions")) || {};
+let recentlySetStaffPasswords = new Map();
+let pendingRecovery = null;
+
+const ADMIN_SUBSCRIPTION_UPI_ID = "9208473301@axl";
+const ADMIN_SUBSCRIPTION_PLANS = [
+    { id: "month", label: "1 month", months: 1, amount: 299 },
+    { id: "quarter", label: "3 months", months: 3, amount: 799 },
+    { id: "half-year", label: "6 months", months: 6, amount: 999 },
+    { id: "year", label: "12 months", months: 12, amount: 1799 }
+];
+
+let selectedProduct = "";
+let selectedQuantity = 1;
+let selectedLocation = locations[0] || "Main Store";
+let selectedStaff = workers[0] || "Assistant";
+let paymentMethod = "upi";
+let currentUserRole = "guest";
+let currentWorkerName = localStorage.getItem("currentWorkerName") || selectedStaff;
+let selectedCashCollectionLocation = locations[0] || "Main Store";
+let currentAdminFocus = "dashboard";
+let upiPaymentId = localStorage.getItem("upiPaymentId") || "";
+let upiPayeeName = localStorage.getItem("upiPayeeName") || "";
+let paymentBankName = localStorage.getItem("paymentBankName") || "";
+let paymentAccountHolder = localStorage.getItem("paymentAccountHolder") || "";
+let paymentAccountNumber = localStorage.getItem("paymentAccountNumber") || "";
+let paymentIfscCode = localStorage.getItem("paymentIfscCode") || "";
+let upiQrDurationMinutes = Number(localStorage.getItem("upiQrDurationMinutes")) === 5 ? 5 : 3;
+let upiPaymentDeadline = 0;
+let upiTimerId = null;
+
+function saveData() {
+
+    localStorage.setItem("adminSubscriptions", JSON.stringify(adminSubscriptions));
+
+    localStorage.setItem(
+        "products",
+        JSON.stringify(products)
+    );
+
+    localStorage.setItem(
+        "sales",
+        JSON.stringify(sales)
+    );
+
+    localStorage.setItem(
+        "locations",
+        JSON.stringify(locations)
+    );
+
+    localStorage.setItem(
+        "workers",
+        JSON.stringify(workers)
+    );
+
+    localStorage.setItem(
+        "activityLog",
+        JSON.stringify(activityLog)
+    );
+
+    localStorage.setItem(
+        "inventoryRequests",
+        JSON.stringify(inventoryRequests)
+    );
+
+    localStorage.setItem("warehouseStock", JSON.stringify(warehouseStock));
+    localStorage.setItem("workerInventory", JSON.stringify(workerInventory));
+    localStorage.setItem("warehouseMovements", JSON.stringify(warehouseMovements));
+
+    localStorage.setItem(
+        "workerProfiles",
+        JSON.stringify(workerProfiles)
+    );
+
+    localStorage.setItem(
+        "workerStatus",
+        JSON.stringify(workerStatus)
+    );
+
+    localStorage.setItem(
+        "workerIds",
+        JSON.stringify(workerIds)
+    );
+
+    localStorage.setItem(
+        "incentives",
+        JSON.stringify(incentiveList)
+    );
+
+    localStorage.setItem("payrollRecords", JSON.stringify(payrollRecords));
+    localStorage.setItem("payrollHistory", JSON.stringify(payrollHistory));
+
+    localStorage.setItem(
+        "currentUserRole",
+        currentUserRole
+    );
+
+    localStorage.setItem(
+        "currentWorkerName",
+        currentWorkerName
+    );
+
+    if (sessionUser) {
+        localStorage.setItem("sessionUser", sessionUser);
+    }
+}
+
+function getCurrentAdminAccountId() {
+    let savedSession;
+    try {
+        savedSession = JSON.parse(localStorage.getItem("authSession") || "null");
+    } catch {
+        savedSession = null;
+    }
+    const account = authAccounts.find(item => item.id === savedSession?.accountId);
+    return account?.role === "admin" ? account.id : "";
+}
+
+function getAdminSubscriptionStatus(record = adminSubscriptions[getCurrentAdminAccountId()]) {
+    if (record?.paidUntil && Number(record.paidUntil) > Date.now()) return "paid";
+    if (!record?.trialStartedAt) return "not-started";
+    return Number(record.trialEndsAt) > Date.now() ? "trial" : "expired";
+}
+
+function formatSubscriptionDate(timestamp) {
+    return new Date(Number(timestamp)).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+}
+
+function subscriptionPlanList() {
+    return `
+        <div style="display:grid;gap:8px;margin:18px 0;">
+            ${ADMIN_SUBSCRIPTION_PLANS.map(plan => `
+                <label style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--panel-alt);">
+                    <span>${plan.label}</span>
+                    <strong>₹${plan.amount}</strong>
+                </label>
+            `).join("")}
+        </div>
+    `;
+}
+
+function renderAdminSubscription(message = "") {
+    if (currentUserRole !== "admin") return;
+    const accountId = getCurrentAdminAccountId();
+    if (!accountId) {
+        renderAuthPage("Sign in again to view subscription details.");
+        return;
+    }
+
+    const record = adminSubscriptions[accountId];
+    const status = getAdminSubscriptionStatus(record);
+    const isTrial = status === "trial";
+    const isPaid = status === "paid";
+    const trialDescription = isTrial
+        ? `Your trial is active until ${formatSubscriptionDate(record.trialEndsAt)}. No payment is due during the trial.`
+        : isPaid
+            ? `Your subscription is active until ${formatSubscriptionDate(record.paidUntil)}.`
+            : status === "expired"
+                ? "Your trial has ended. Choose a plan and pay using UPI or QR."
+                : "Start your one-time 15-day free trial whenever you are ready.";
+
+    document.body.classList.add("auth-locked");
+    document.getElementById("app").innerHTML = `
+        <main class="auth-shell" style="max-width:560px;">
+            <div class="auth-brand">Zero3Aryans</div>
+            <section class="auth-panel">
+                <h1>${status === "expired" ? "Choose a subscription" : "Trial and subscription"}</h1>
+                <p>${trialDescription}</p>
+                <h2 style="font-size:16px;margin:18px 0 0;">Plans after the trial</h2>
+                ${subscriptionPlanList()}
+                ${status === "not-started" ? `
+                    <button class="primary-button" type="button" onclick="startAdminFreeTrial()">Start 15-day free trial</button>
+                ` : ""}
+                ${isTrial || isPaid ? `
+                    <button class="secondary-button" type="button" onclick="adminPage()">Back to app</button>
+                ` : ""}
+                ${status === "expired" ? `
+                    <form class="auth-form" onsubmit="showSubscriptionPayment(event)">
+                        <label for="subscriptionPlan">Select plan</label>
+                        <select id="subscriptionPlan" name="plan" required>
+                            ${ADMIN_SUBSCRIPTION_PLANS.map(plan => `<option value="${plan.id}">${plan.label} - ₹${plan.amount}</option>`).join("")}
+                        </select>
+                        <button class="primary-button" type="submit">Continue to UPI / QR</button>
+                    </form>
+                ` : ""}
+                <div id="subscriptionPaymentDetails"></div>
+                ${message ? `<div class="auth-notice visible" role="status">${escapeHtml(message)}</div>` : ""}
+                <p style="margin-top:16px;font-size:11px;">This preview stores trial status in this browser. Firebase account syncing and secure UPI payment verification are not connected yet.</p>
+            </section>
+        </main>
+    `;
+}
+
+function startAdminFreeTrial() {
+    if (currentUserRole !== "admin") return;
+    const accountId = getCurrentAdminAccountId();
+    if (!accountId) return renderAdminSubscription("Sign in again to start your trial.");
+
+    if (adminSubscriptions[accountId]?.trialStartedAt) {
+        return renderAdminSubscription("The free trial has already been used for this account.");
+    }
+
+    const trialStartedAt = Date.now();
+    adminSubscriptions[accountId] = {
+        trialStartedAt,
+        trialEndsAt: trialStartedAt + 15 * 24 * 60 * 60 * 1000
+    };
+    saveData();
+    adminPage();
+}
+
+function showSubscriptionPayment(event) {
+    event.preventDefault();
+    if (currentUserRole !== "admin" || getAdminSubscriptionStatus() !== "expired") return;
+
+    const data = new FormData(event.target);
+    const plan = ADMIN_SUBSCRIPTION_PLANS.find(item => item.id === data.get("plan"));
+    const details = document.getElementById("subscriptionPaymentDetails");
+    if (!plan || !details) return;
+
+    const paymentUrl = `upi://pay?pa=${encodeURIComponent(ADMIN_SUBSCRIPTION_UPI_ID)}&pn=${encodeURIComponent("Zero3Aryans")}&am=${plan.amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Zero3Aryans ${plan.label} subscription`)}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(paymentUrl)}`;
+    details.innerHTML = `
+        <section class="center" style="margin-top:20px;">
+            <h2 style="font-size:18px;">Pay ₹${plan.amount} for ${plan.label}</h2>
+            <p>UPI ID: <strong>${ADMIN_SUBSCRIPTION_UPI_ID}</strong></p>
+            <img src="${qrUrl}" width="240" height="240" alt="UPI QR code for ₹${plan.amount}" style="max-width:100%;">
+            <p><a class="primary-button" href="${paymentUrl}" style="display:inline-block;text-decoration:none;">Open UPI app</a></p>
+            <p class="product-info">After paying, the founder must verify the transaction and activate the plan. This preview cannot verify or record payments yet. No card payments are offered.</p>
+        </section>
+    `;
+}
+
+function ensureAuthData() {
+    if (!localStorage.getItem("warehouseStock")) {
+        warehouseStock = Object.fromEntries(products.map(product => [
+            product.id,
+            Math.max(0, Number(product.working || 0) - getSold(product.id))
+        ]));
+    }
+
+    if (!workers.some(worker => workerProfiles[worker] === "manager")) {
+        const managerName = workers.find(worker => worker.toLowerCase() === "manager") || "Manager";
+        if (!workers.includes(managerName)) workers.push(managerName);
+        workerProfiles[managerName] = "manager";
+        workerStatus[managerName] = true;
+    }
+
+    workers.forEach((worker, index) => {
+        if (!workerProfiles[worker]) {
+            workerProfiles[worker] = "assistant";
+        }
+
+        if (workerStatus[worker] === undefined) {
+            workerStatus[worker] = true;
+        }
+
+            if (!workerIds[worker]) {
+            workerIds[worker] = `W-${String(index + 1).padStart(3, "0")}`;
+        }
+    });
+
+    if (!workerStatus.admin) {
+        workerStatus.admin = true;
+    }
+
+    saveData();
+}
+
+function recordActivity(action, details = {}) {
+    activityLog.unshift({
+        id: Date.now(),
+        action,
+        details,
+        worker: details.worker || selectedStaff || "System",
+        location: details.location || selectedLocation || "Main Store",
+        time: new Date().toISOString()
+    });
+    saveData();
+}
+
+function hasAdminAccess() {
+    return currentUserRole === "admin" || currentUserRole === "manager";
+}
+
+function saveAuthAccounts() {
+    localStorage.setItem("authAccounts", JSON.stringify(authAccounts));
+}
+
+function createAuthSalt() {
+    return Array.from(crypto.getRandomValues(new Uint8Array(16)))
+        .map(value => value.toString(16).padStart(2, "0"))
+        .join("");
+}
+
+async function hashAuthPassword(password, salt) {
+    if (!crypto.subtle) throw new Error("Secure password hashing is not available in this browser.");
+    const key = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(password),
+        "PBKDF2",
+        false,
+        ["deriveBits"]
+    );
+    const bits = await crypto.subtle.deriveBits({
+        name: "PBKDF2",
+        salt: new TextEncoder().encode(salt),
+        iterations: 120000,
+        hash: "SHA-256"
+    }, key, 256);
+    return Array.from(new Uint8Array(bits)).map(value => value.toString(16).padStart(2, "0")).join("");
+}
+
+function showAuthNotice(message) {
+    const notice = document.getElementById("authNotice");
+    if (!notice) return;
+    notice.textContent = message;
+    notice.classList.toggle("visible", Boolean(message));
+}
+function togglePasswordVisibility(button) {
+    const input = button.parentElement.querySelector("input");
+    if (!input) return;
+
+    const shouldShow = input.type === "password";
+    input.type = shouldShow ? "text" : "password";
+    button.textContent = shouldShow ? "Hide" : "Show";
+    button.setAttribute("aria-label", shouldShow ? "Hide password" : "Show password");
+    button.setAttribute("aria-pressed", String(shouldShow));
+}
+
+function renderAuthPage(message = "", mode = "choice") {
+    document.body.classList.add("auth-locked");
+    const hasAdmin = authAccounts.some(account => account.role === "admin");
+    if (mode === "create-admin" && hasAdmin) mode = "choice";
+    const loginRole = mode.startsWith("login-") ? mode.slice("login-".length) : "";
+    const roleLabels = { admin: "Admin", manager: "Manager", assistant: "Assistant" };
+    document.getElementById("app").innerHTML = `
+        <main class="auth-shell">
+            <div class="auth-brand">Zero3Aryans</div>
+            <section class="auth-panel">
+                ${mode === "create-admin" ? `
+                    <h1>Create administrator profile</h1>
+                    <p>Create the one-time Admin profile for this browser.</p>
+                    <form class="auth-form" onsubmit="createFirstAdmin(event)">
+                        <input name="email" type="email" autocomplete="email" placeholder="Email address" required>
+                        <input name="phone" type="tel" autocomplete="tel" placeholder="Phone number" required>
+                        <input name="username" autocomplete="username" placeholder="Username" required>
+                        <div class="password-input"><input name="password" type="password" autocomplete="new-password" minlength="8" placeholder="Password (at least 8 characters)" required><button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button></div>
+                        <div class="password-input"><input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Confirm password" required><button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button></div>
+                        <button class="primary-button" type="submit">Create admin profile</button>
+                    </form>
+                    <div class="auth-actions"><button class="auth-link" type="button" onclick="renderAuthPage()">Back to profile options</button></div>
+                ` : loginRole ? `
+                    <h1>Login ${roleLabels[loginRole]} profile</h1>
+                    <p>Enter the username and password provided for your ${roleLabels[loginRole]} profile.</p>
+                    <form class="auth-form" onsubmit="login(event)">
+                        <input type="hidden" name="panel" value="${loginRole}">
+                        <input name="identifier" autocomplete="username" placeholder="Username${loginRole === "admin" ? ", email, or phone" : ""}" required>
+                        <div class="password-input"><input name="password" type="password" autocomplete="current-password" placeholder="Password" required><button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button></div>
+                        <button class="primary-button" type="submit">Login ${roleLabels[loginRole]}</button>
+                    </form>
+                    <div class="auth-actions">
+                        <button class="auth-link" type="button" onclick="renderRecoveryPage()">Forgot password?</button>
+                        <button class="auth-link" type="button" onclick="renderAuthPage()">Choose another profile</button>
+                    </div>
+                ` : `
+                    <h1>Choose a profile</h1>
+                    <p>${hasAdmin ? "Use the username and password provided for your profile." : "Create the Admin profile first. Manager and Assistant profiles can then be created by the Admin."}</p>
+                    <div class="auth-form">
+                        ${hasAdmin ? "" : `<button class="primary-button" type="button" onclick="renderAuthPage('', 'create-admin')">Create Admin profile</button>`}
+                        ${hasAdmin ? `<button class="primary-button" type="button" onclick="renderAuthPage('', 'login-admin')">Login Admin profile</button>` : ""}
+                        <button class="secondary-button" type="button" onclick="renderAuthPage('', 'login-manager')" ${hasAdmin ? "" : "disabled"}>Login Manager profile</button>
+                        <button class="secondary-button" type="button" onclick="renderAuthPage('', 'login-assistant')" ${hasAdmin ? "" : "disabled"}>Login Assistant profile</button>
+                    </div>
+                `}
+                <div id="authNotice" class="auth-notice" role="status"></div>
+                <p style="margin:14px 0 0;font-size:11px;">Profiles are stored in this browser. The Admin creates Manager and Assistant usernames and passwords.</p>
+            </section>
+        </main>
+    `;
+    showAuthNotice(message);
+}
+
+function renderRecoveryPage() {
+    pendingRecovery = null;
+    document.body.classList.add("auth-locked");
+    document.getElementById("app").innerHTML = `
+        <main class="auth-shell">
+            <div class="auth-brand">Zero3Aryans</div>
+            <section class="auth-panel">
+                <h1>Reset password</h1>
+                <p>Enter the email, phone number, or username for your account.</p>
+                <form class="auth-form" onsubmit="beginPasswordRecovery(event)">
+                    <input name="identifier" autocomplete="username" placeholder="Email, phone, or username" required>
+                    <button class="primary-button" type="submit">Generate demo code</button>
+                </form>
+                <div id="recoveryCodeArea" style="display:none;margin-top:16px;">
+                    <p id="recoveryCodeNotice" class="auth-notice visible" role="status"></p>
+                    <form class="auth-form" onsubmit="completePasswordRecovery(event)">
+                        <input name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="Demo verification code" required>
+                        <div class="password-input"><input name="password" type="password" autocomplete="new-password" minlength="8" placeholder="New password (at least 8 characters)" required><button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button></div>
+                        <div class="password-input"><input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Confirm new password" required><button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button></div>
+                        <button class="primary-button" type="submit">Save new password</button>
+                    </form>
+                </div>
+                <div id="authNotice" class="auth-notice" role="status"></div>
+                <div class="auth-actions"><button class="auth-link" type="button" onclick="renderAuthPage()">Back to sign in</button></div>
+                <p style="margin:8px 0 0;font-size:11px;">Demo codes appear on this screen. Email and SMS delivery require a configured service.</p>
+            </section>
+        </main>
+    `;
+}
+
+async function createFirstAdmin(event) {
+    event.preventDefault();
+    if (authAccounts.some(account => account.role === "admin")) {
+        renderAuthPage("An admin profile already exists. Please sign in.");
+        return;
+    }
+
+    const data = new FormData(event.target);
+    const email = String(data.get("email") || "").trim().toLowerCase();
+    const phone = String(data.get("phone") || "").trim();
+    const username = String(data.get("username") || "").trim();
+    const password = String(data.get("password") || "");
+    if (password.length < 8 || password !== data.get("confirmPassword")) {
+        showAuthNotice("Use at least 8 characters and make both passwords match.");
+        return;
+    }
+    if (authAccounts.some(account => account.email === email || account.phone === phone)) {
+        showAuthNotice("That email or phone number is already registered.");
+        return;
+    }
+    if (authAccounts.some(account => account.username?.toLowerCase() === username.toLowerCase())) {
+        showAuthNotice("That username is already in use.");
+        return;
+    }
+
+    try {
+        const salt = createAuthSalt();
+        const account = {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            role: "admin",
+            email,
+            phone,
+            username,
+            salt,
+            passwordHash: await hashAuthPassword(password, salt),
+            createdAt: new Date().toISOString()
+        };
+        authAccounts.push(account);
+        saveAuthAccounts();
+        startAuthSession(account);
+    } catch (error) {
+        showAuthNotice(error.message || "Could not create the admin profile.");
+    }
+}
+
+async function login(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const identifier = String(data.get("identifier") || "").trim().toLowerCase();
+    const selectedPanel = String(data.get("panel") || "");
+    const account = authAccounts.find(item =>
+        item.email?.toLowerCase() === identifier || item.phone?.toLowerCase() === identifier || item.username?.toLowerCase() === identifier
+    );
+    if (!account) {
+        showAuthNotice("Account or password is incorrect.");
+        return;
+    }
+    if (account.workerName && workerStatus[account.workerName] === false) {
+        showAuthNotice("This account is inactive. Contact the administrator.");
+        return;
+    }
+
+    try {
+        const passwordHash = await hashAuthPassword(String(data.get("password") || ""), account.salt);
+        if (passwordHash !== account.passwordHash) {
+            showAuthNotice("Account or password is incorrect.");
+            return;
+        }
+        const accountPanel = account.role === "worker" ? "assistant" : account.role;
+        if (selectedPanel !== accountPanel) {
+            showAuthNotice("The selected panel does not match this account. Choose the correct panel.");
+            return;
+        }
+        startAuthSession(account);
+    } catch (error) {
+        showAuthNotice(error.message || "Could not sign in.");
+    }
+}
+
+function startAuthSession(account) {
+    const expiresAt = Date.now() + 60 * 24 * 60 * 60 * 1000;
+    if (account.role !== "admin") recentlySetStaffPasswords.clear();
+    localStorage.setItem("authSession", JSON.stringify({ accountId: account.id, expiresAt }));
+    sessionUser = account.username || account.email;
+    currentUserRole = account.role;
+    if (account.workerName) {
+        currentWorkerName = account.workerName;
+        selectedStaff = account.workerName;
+    }
+    document.body.classList.remove("auth-locked");
+    updateHeaderIdentity();
+    showPage(currentUserRole === "worker" ? "worker" : "admin");
+}
+
+function restoreAuthSession() {
+    let savedSession;
+    try {
+        savedSession = JSON.parse(localStorage.getItem("authSession") || "null");
+    } catch {
+        savedSession = null;
+    }
+    const account = authAccounts.find(item => item.id === savedSession?.accountId);
+    if (!account || savedSession.expiresAt <= Date.now() || (account.workerName && workerStatus[account.workerName] === false)) {
+        localStorage.removeItem("authSession");
+        currentUserRole = "guest";
+        renderAuthPage();
+        return;
+    }
+    currentUserRole = account.role;
+    sessionUser = account.username || account.email;
+    if (account.workerName) {
+        currentWorkerName = account.workerName;
+        selectedStaff = account.workerName;
+    }
+    document.body.classList.remove("auth-locked");
+    updateHeaderIdentity();
+    showPage(currentUserRole === "worker" ? "worker" : "admin");
+}
+
+function logout() {
+    recentlySetStaffPasswords.clear();
+    localStorage.removeItem("authSession");
+    localStorage.removeItem("sessionUser");
+    localStorage.removeItem("currentUserRole");
+    currentUserRole = "guest";
+    sessionUser = "";
+    renderAuthPage("You have been logged out.");
+}
+
+function openPanelAccess() {
+    if (currentUserRole !== "admin") return;
+
+    const modal = document.getElementById("modal");
+    modal.innerHTML = `
+        <div class="modal-box">
+            <div class="section-header">
+                <h2>Switch account</h2>
+                <button class="secondary-button" type="button" onclick="closeModal()">Cancel</button>
+            </div>
+            <p>Enter a Manager or Assistant username and password to open their panel.</p>
+            <form class="auth-form" onsubmit="switchPanelWithCredentials(event)">
+                <input name="identifier" autocomplete="username" placeholder="Username or email" required>
+                <div class="password-input"><input name="password" type="password" autocomplete="current-password" placeholder="Password" required><button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button></div>
+                <div id="panelAccessNotice" class="auth-notice" role="status"></div>
+                <button class="primary-button" type="submit">Continue</button>
+            </form>
+        </div>
+    `;
+    modal.classList.remove("hidden");
+}
+
+async function switchPanelWithCredentials(event) {
+    event.preventDefault();
+    if (currentUserRole !== "admin") return;
+
+    const data = new FormData(event.target);
+    const identifier = String(data.get("identifier") || "").trim().toLowerCase();
+    const account = authAccounts.find(item =>
+        item.email?.toLowerCase() === identifier || item.username?.toLowerCase() === identifier
+    );
+    const notice = document.getElementById("panelAccessNotice");
+    const showError = message => {
+        notice.textContent = message;
+        notice.classList.add("visible");
+    };
+
+    if (!account || !["manager", "worker"].includes(account.role)) {
+        showError("Manager or Assistant username and password are incorrect.");
+        return;
+    }
+    if (account.workerName && workerStatus[account.workerName] === false) {
+        showError("This account is inactive. Contact the administrator.");
+        return;
+    }
+
+    try {
+        const passwordHash = await hashAuthPassword(String(data.get("password") || ""), account.salt);
+        if (passwordHash !== account.passwordHash) {
+            showError("Manager or Assistant username and password are incorrect.");
+            return;
+        }
+
+        document.getElementById("modal").classList.add("hidden");
+        startAuthSession(account);
+    } catch (error) {
+        showError(error.message || "Could not switch account.");
+    }
+}
+
+function beginPasswordRecovery(event) {
+    event.preventDefault();
+    const identifier = String(new FormData(event.target).get("identifier") || "").trim().toLowerCase();
+    const account = authAccounts.find(item =>
+        item.email?.toLowerCase() === identifier ||
+        item.username?.toLowerCase() === identifier ||
+        item.phone?.replace(/[\s()-]/g, "") === identifier.replace(/[\s()-]/g, "")
+    );
+    if (!account) {
+        showAuthNotice("No account matches that email, phone, or username.");
+        return;
+    }
+    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, "0");
+    pendingRecovery = { accountId: account.id, code, expiresAt: Date.now() + 10 * 60 * 1000 };
+    document.getElementById("recoveryCodeArea").style.display = "block";
+    document.getElementById("recoveryCodeNotice").textContent = `Local demo code: ${code}. It expires in 10 minutes and was not sent by email or SMS.`;
+    showAuthNotice("");
+}
+
+async function completePasswordRecovery(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    if (!pendingRecovery || pendingRecovery.expiresAt <= Date.now() || String(data.get("code") || "").trim() !== pendingRecovery.code) {
+        pendingRecovery = null;
+        showAuthNotice("That demo code is invalid or expired. Generate a new one.");
+        return;
+    }
+    const password = String(data.get("password") || "");
+    if (password.length < 8 || password !== data.get("confirmPassword")) {
+        showAuthNotice("Use at least 8 characters and make both passwords match.");
+        return;
+    }
+    const account = authAccounts.find(item => item.id === pendingRecovery.accountId);
+    if (!account) {
+        showAuthNotice("Account was not found.");
+        return;
+    }
+    try {
+        account.salt = createAuthSalt();
+        account.passwordHash = await hashAuthPassword(password, account.salt);
+        saveAuthAccounts();
+        pendingRecovery = null;
+        renderAuthPage("Password updated. Sign in with your new password.");
+    } catch (error) {
+        showAuthNotice(error.message || "Could not update the password.");
+    }
+}
+
+function getWorkerProfile(workerName) {
+    const profile = workerProfiles[workerName];
+    return profile === "manager" ? "Manager" : "Assistant";
+}
+
+function updateHeaderIdentity() {
+    const roleElement = document.getElementById("headerRole");
+    const profileElement = document.getElementById("headerProfile");
+    if (!roleElement || !profileElement) return;
+
+    const workerName = currentWorkerName || "Assistant";
+    const workerProfile = getWorkerProfile(workerName);
+    roleElement.textContent = currentUserRole === "admin"
+        ? "Admin"
+        : currentUserRole === "manager" ? "Manager" : "Assistant";
+    profileElement.textContent = currentUserRole === "admin"
+        ? "Administrator"
+        : currentUserRole === "manager"
+            ? `${workerName} Manager profile`
+            : workerName.toLowerCase() === workerProfile.toLowerCase()
+                ? workerName
+                : `${workerName} (${workerProfile})`;
+}
+
+function money(number) {
+
+    return "₹" +
+        Number(number || 0)
+        .toLocaleString("en-IN");
+}
+
+function getSold(productId) {
+
+    return sales
+        .filter(
+            sale =>
+                sale.productId == productId &&
+                sale.status === "paid"
+        )
+        .reduce(
+            (total, sale) =>
+                total + sale.quantity,
+            0
+        );
+}
+
+function getStock(product) {
+    const warehouseQuantity = getWarehouseStock(product);
+    return warehouseQuantity + workers.reduce((total, worker) => total + getWorkerStock(worker, product), 0);
+}
+
+function getWarehouseStock(product) {
+    return Math.max(0, Number(warehouseStock[product.id] || 0));
+}
+
+function getWorkerStock(workerName, product) {
+    return Math.max(0, Number(workerInventory[workerName]?.[product.id] || 0));
+}
+
+function getAvailableStock(product) {
+    const workerName = currentUserRole === "worker" ? currentWorkerName : selectedStaff;
+    return getWorkerStock(workerName, product);
+}
+
+function recordWarehouseMovement(type, product, quantity, details = {}) {
+    warehouseMovements.unshift({
+        id: Date.now(),
+        type,
+        productId: product.id,
+        productName: product.name,
+        productNo: product.productNo || product.sku || "N/A",
+        sku: product.sku,
+        category: product.category,
+        color: product.color || "Unknown",
+        quantity,
+        worker: details.worker || "",
+        location: details.location || "Warehouse",
+        note: details.note || "",
+        time: new Date().toISOString()
+    });
+}
+
+function getCashCollectionTotals(location) {
+    return sales.reduce((totals, sale) => {
+        if (sale.payment !== "cash" || (location !== undefined && sale.location !== location)) {
+            return totals;
+        }
+
+        const amount = Number(sale.total || 0);
+        const collectedAmount = sale.cashCollected
+            ? amount
+            : Math.min(amount, Math.max(0, Number(sale.cashCollectedAmount || 0)));
+        totals.total += amount;
+        totals.collected += collectedAmount;
+        totals.uncollected += amount - collectedAmount;
+        return totals;
+    }, { total: 0, collected: 0, uncollected: 0 });
+}
+
+function getCashSaleStatus(sale) {
+    if (sale.cashCollected) return "Collected";
+    const collectedAmount = Number(sale.cashCollectedAmount || 0);
+    if (collectedAmount > 0) return `Partially collected (${money(collectedAmount)})`;
+    return "Uncollected";
+}
+
+function getPayrollCycle(frequency, date = new Date()) {
+    const year = date.getFullYear();
+    if (frequency === "yearly") {
+        return {
+            key: String(year),
+            start: new Date(year, 0, 1),
+            end: new Date(year + 1, 0, 1),
+            label: String(year)
+        };
+    }
+
+    const month = date.getMonth();
+    return {
+        key: `${year}-${String(month + 1).padStart(2, "0")}`,
+        start: new Date(year, month, 1),
+        end: new Date(year, month + 1, 1),
+        label: date.toLocaleString("en", { month: "long", year: "numeric" })
+    };
+}
+
+function getPayrollSummary(workerName) {
+    const record = payrollRecords[workerName];
+    if (!record) return null;
+
+    const cycle = getPayrollCycle(record.frequency);
+    const payment = payrollHistory.find(item => item.worker === workerName && item.cycle === cycle.key);
+    const paid = Boolean(payment);
+    const salesStart = payment && new Date(payment.paidAt) > cycle.start
+        ? new Date(payment.paidAt)
+        : cycle.start;
+    const cycleSales = sales.filter(sale => {
+        const saleDate = new Date(sale.time);
+        return (sale.staff || "Assistant") === workerName &&
+            sale.location === record.location &&
+            sale.status === "paid" &&
+            saleDate >= salesStart && saleDate < cycle.end;
+    });
+    const salesTotal = cycleSales.reduce((sum, sale) => sum + Number(sale.total || 0), 0);
+    const earnedIncentives = incentiveList.filter(item =>
+        Number(item.targetSales || 0) > 0 && salesTotal >= Number(item.targetSales)
+    );
+    const incentiveTotal = earnedIncentives.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    return {
+        record,
+        cycle,
+        salesTotal,
+        earnedIncentives: paid ? [] : earnedIncentives,
+        paid,
+        salaryDue: paid ? 0 : Number(record.salaryAmount || 0),
+        incentiveDue: paid ? 0 : incentiveTotal,
+        totalDue: paid ? 0 : Number(record.salaryAmount || 0) + incentiveTotal
+    };
+}
+
+function loadPayrollDetails(workerName) {
+    const record = payrollRecords[workerName] || {};
+    const fieldValues = {
+        payrollLocation: record.location || locations[0] || "",
+        payrollAmount: record.salaryAmount ?? "",
+        payrollFrequency: record.frequency || "monthly",
+        payrollAccountHolder: record.accountHolder || "",
+        payrollBankName: record.bankName || "",
+        payrollAccountNumber: record.accountNumber || "",
+        payrollIfsc: record.ifscCode || ""
+    };
+
+    Object.entries(fieldValues).forEach(([id, value]) => {
+        const field = document.getElementById(id);
+        if (field) field.value = value;
+    });
+}
+
+function savePayroll() {
+    if (!hasAdminAccess()) return;
+
+    const worker = document.getElementById("payrollWorker")?.value;
+    const location = document.getElementById("payrollLocation")?.value;
+    const salaryInput = document.getElementById("payrollAmount")?.value;
+    const salaryAmount = Number(salaryInput);
+    const frequency = document.getElementById("payrollFrequency")?.value;
+    const accountHolder = document.getElementById("payrollAccountHolder")?.value.trim() || "";
+    const bankName = document.getElementById("payrollBankName")?.value.trim() || "";
+    const accountNumber = document.getElementById("payrollAccountNumber")?.value.trim() || "";
+    const ifscCode = document.getElementById("payrollIfsc")?.value.trim().toUpperCase() || "";
+    if (!worker || !location || salaryInput === "" || !Number.isFinite(salaryAmount) || salaryAmount <= 0) {
+        alert("Choose a worker and location, and enter a valid salary amount.");
+        return;
+    }
+
+    payrollRecords[worker] = {
+        worker,
+        location,
+        salaryAmount,
+        frequency,
+        accountHolder,
+        bankName,
+        accountNumber,
+        ifscCode
+    };
+    saveData();
+    recordActivity("Salary details saved", {
+        worker,
+        location,
+        details: `${money(salaryAmount)} ${frequency} salary`
+    });
+    adminPage();
+}
+
+function markPayrollPaid(workerName) {
+    if (!hasAdminAccess()) return;
+    const summary = getPayrollSummary(workerName);
+    if (!summary || summary.paid || summary.totalDue <= 0) return;
+
+    payrollHistory.unshift({
+        id: Date.now(),
+        worker: workerName,
+        location: summary.record.location,
+        frequency: summary.record.frequency,
+        cycle: summary.cycle.key,
+        salaryAmount: summary.salaryDue,
+        incentiveAmount: summary.incentiveDue,
+        totalAmount: summary.totalDue,
+        accountHolder: summary.record.accountHolder || "",
+        bankName: summary.record.bankName || "",
+        accountNumber: summary.record.accountNumber || "",
+        ifscCode: summary.record.ifscCode || "",
+        incentives: summary.earnedIncentives.map(item => ({ title: item.title, amount: Number(item.amount || 0) })),
+        paidAt: new Date().toISOString()
+    });
+
+    saveData();
+    recordActivity("Salary and incentives paid", {
+        worker: workerName,
+        location: summary.record.location,
+        details: `${money(summary.totalDue)} paid for ${summary.cycle.label}`
+    });
+    adminPage();
+}
+
+function updateBottomNav() {
+    return;
+}
+
+function showPage(page) {
+
+    if (currentUserRole === "guest") {
+        renderAuthPage();
+        return;
+    }
+
+    if (page === "admin" && !hasAdminAccess()) {
+        alert("Only Admin or Manager can access the management dashboard.");
+        showPage("worker");
+        return;
+    }
+
+    if (currentUserRole === "worker" && !["worker", "sell", "sales"].includes(page)) {
+        alert("Assistants can only use the assistant panel and their sale tools.");
+        showPage("worker");
+        return;
+    }
+
+    if (page === "worker") {
+        workerPage();
+        updateBottomNav();
+        return;
+    }
+
+    if (page === "home") {
+        homePage();
+    }
+
+    if (page === "inventory") {
+        inventoryPage();
+    }
+
+    if (page === "sell") {
+        sellPage();
+    }
+
+    if (page === "sales") {
+        salesPage();
+    }
+
+    if (page === "money") {
+        moneyPage();
+    }
+
+    if (page === "admin") {
+        adminPage();
+    }
+
+    updateBottomNav();
+}
+
+function homePage() {
+
+    const today =
+        new Date().toDateString();
+
+    const todaySales =
+        sales.filter(
+            sale =>
+                new Date(sale.time).toDateString() === today &&
+                sale.status === "paid"
+        );
+
+    const todayAmount =
+        todaySales.reduce(
+            (sum, sale) =>
+                sum + sale.total,
+            0
+        );
+
+    const units =
+        todaySales.reduce(
+            (sum, sale) =>
+                sum + sale.quantity,
+            0
+        );
+
+    const totalStock =
+        products.reduce(
+            (sum, product) =>
+                sum + getStock(product),
+            0
+        );
+
+    const lowStock =
+        products.filter(
+            product =>
+                getStock(product) <= 5
+        ).length;
+
+    const cashPending =
+        sales
+        .filter(
+            sale =>
+                sale.payment === "cash" &&
+                !sale.cashCollected
+        )
+        .reduce(
+            (sum, sale) =>
+                sum + sale.total,
+            0
+        );
+
+    document.getElementById("app").innerHTML = `
+
+    <div class="container">
+
+        <div class="hero">
+
+            <small>TODAY'S SALES</small>
+
+            <h1>${money(todayAmount)}</h1>
+
+            <span>
+                ${units} products sold today
+            </span>
+
+        </div>
+
+        <div class="actions">
+
+            <button
+                class="action primary"
+                onclick="showPage('sell')">
+
+                <span class="action-icon">
+                    🛒
+                </span>
+
+                New Sale
+
+            </button>
+
+            <button
+                class="action"
+                onclick="openReceive()">
+
+                <span class="action-icon">
+                    📦
+                </span>
+
+                Receive Inventory
+
+            </button>
+
+            ${hasAdminAccess() ? `
+            <button
+                class="action primary admin-dashboard-action"
+                onclick="openAdminPanel()">
+
+                <span class="action-icon">
+                    📊
+                </span>
+
+                Admin Dashboard
+
+            </button>
+            ` : ""}
+
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>Overview</h2>
+            </div>
+
+            <div class="cards" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                <div class="card">
+                    <div class="card-title">Sales</div>
+                    <div class="card-value">${money(todayAmount)}</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Stock</div>
+                    <div class="card-value">${totalStock}</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Cash</div>
+                    <div class="card-value">${money(cashPending)}</div>
+                </div>
+            </div>
+
+            <div class="cards" style="margin-top:12px; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div class="card">
+                    <div class="card-title">Low Stock</div>
+                    <div class="card-value">${lowStock}</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Total Sales</div>
+                    <div class="card-value">${money(sales.reduce((a,s)=>a+s.total,0))}</div>
+                </div>
+            </div>
+
+            <div class="cards" style="margin-top:12px; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div class="card" onclick="openAdminDetail('team')" style="cursor:pointer;">
+                    <div class="card-title">Team</div>
+                    <div class="card-value">${workers.length}</div>
+                    <div class="product-info">Active staff members</div>
+                </div>
+
+                <div class="card" onclick="openAdminDetail('locations')" style="cursor:pointer;">
+                    <div class="card-title">Locations</div>
+                    <div class="card-value">${locations.length}</div>
+                    <div class="product-info">Service points</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+function inventoryPage() {
+
+    document.getElementById("app").innerHTML = `
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <h2>Inventory</h2>
+
+            <button
+                class="primary-button"
+                onclick="openReceive()">
+
+                + Receive
+
+            </button>
+
+        </div>
+
+        <div style="margin-bottom:12px;">
+            <button class="secondary-button" onclick="goBack()">← Back</button>
+        </div>
+
+        <input
+            class="search"
+            placeholder="Search product..."
+            oninput="searchProducts(this.value)"
+        >
+
+        <div id="productList"></div>
+
+    </div>
+
+    `;
+
+    displayProducts(products);
+}
+
+function displayProducts(list) {
+
+    document.getElementById(
+        "productList"
+    ).innerHTML = list.map(product => `
+
+        <div class="product">
+
+            <div>
+
+                <div class="product-name">
+                    ${product.name}
+                </div>
+
+                <div class="product-info">
+                    ${product.category}
+                    · SKU ${product.sku}
+                </div>
+
+                <span class="badge ${
+                    getStock(product) <= 5
+                    ? "orange"
+                    : "green"
+                }">
+
+                    ${getStock(product)}
+                    available
+
+                </span>
+
+                <span class="badge red">
+
+                    ${product.damaged}
+                    damaged
+
+                </span>
+
+            </div>
+
+            <strong>
+                ${money(product.price)}
+            </strong>
+
+        </div>
+
+    `).join("");
+
+}
+
+function searchProducts(text) {
+
+    const result =
+        products.filter(product =>
+            (
+                product.name +
+                product.category +
+                product.sku
+            )
+            .toLowerCase()
+            .includes(
+                text.toLowerCase()
+            )
+        );
+
+    displayProducts(result);
+}
+
+function openReceive() {
+    if (!hasAdminAccess()) {
+        alert("Inventory receipts are recorded by the Warehouse manager. Use Request Stock to ask for a dispatch.");
+        return;
+    }
+
+    document.getElementById("modal").classList.remove("hidden");
+
+    document.getElementById("modal").innerHTML = `
+
+    <div class="modal-box">
+
+        <div class="section-header">
+
+            <h2>Receive Inventory</h2>
+
+            <button
+                onclick="closeModal()"
+                style="
+                border:none;
+                background:none;
+                color:#777;
+                ">
+
+                Close
+
+            </button>
+
+        </div>
+
+        <form
+            class="form"
+            onsubmit="receiveInventory(event)">
+
+            <div class="field">
+
+                <label>
+                    PRODUCT
+                </label>
+
+                <select name="productId" required>
+                    <option value="">Select product</option>
+                    ${products.map(product => `
+                        <option value="${product.id}">${product.name} - ${product.sku}</option>
+                    `).join("")}
+                </select>
+
+            </div>
+
+            <div class="two">
+
+                <div class="field">
+
+                    <label>
+                        HOW MUCH QUANTITY RECEIVED
+                    </label>
+
+                    <input
+                        name="received"
+                        type="number"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        WORKING QUANTITY
+                    </label>
+
+                    <input
+                        name="working"
+                        type="number"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="two">
+
+                <div class="field">
+
+                    <label>
+                        DAMAGED QUANTITY
+                    </label>
+
+                    <input
+                        name="damaged"
+                        type="number"
+                        min="0"
+                        value="0"
+                        required
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        RECEIVING DATE
+                    </label>
+
+                    <input
+                        name="receivedDate"
+                        type="date"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <button class="primary-button" ${products.length ? "" : "disabled"}>
+                Save Inventory
+            </button>
+
+            ${!products.length ? `<div class="empty" style="margin-top:10px;">No products assigned yet. Ask admin to create inventory first.</div>` : ""}
+
+        </form>
+
+    </div>
+
+    `;
+}
+
+function receiveWarehouseStock(event) {
+    event.preventDefault();
+    if (!hasAdminAccess()) return;
+
+    const data = new FormData(event.target);
+    const productName = String(data.get("productName") || "").trim().toUpperCase();
+    const received = Number(data.get("quantity"));
+    const rawPrice = String(data.get("price") || "").trim();
+    const price = rawPrice ? Number(rawPrice) : 0;
+    const damaged = Number(data.get("damaged"));
+    const receivedDate = String(data.get("receivedDate") || "").trim();
+
+    if (!productName || !receivedDate || !Number.isInteger(received) || received < 1 || !Number.isFinite(price) || price < 0 || !Number.isInteger(damaged) || damaged < 0 || damaged > received) {
+        alert("Enter a product name, a valid quantity, no more damaged units than received, and a received date.");
+        return;
+    }
+
+    const working = received - damaged;
+    let product = products.find(item => String(item.name || "").trim().toLowerCase() === productName.toLowerCase());
+
+    if (product) {
+        product.received = Number(product.received || 0) + received;
+        product.working = Number(product.working || 0) + working;
+        product.damaged = Number(product.damaged || 0) + damaged;
+        product.lastReceivedDate = receivedDate;
+        warehouseStock[product.id] = getWarehouseStock(product) + working;
+    } else {
+        const id = Date.now();
+        const sku = `MAN-${id}`;
+        product = {
+            id,
+            name: productName,
+            category: "GENERAL",
+            sku,
+            productNo: sku,
+            color: "UNKNOWN",
+            price,
+            received,
+            working,
+            damaged,
+            lastReceivedDate: receivedDate
+        };
+        products.push(product);
+        warehouseStock[id] = working;
+    }
+
+    recordWarehouseMovement("received", product, working, {
+        location: "Warehouse",
+        note: `${received} received; ${damaged} damaged; ${receivedDate}`
+    });
+    saveData();
+    recordActivity("Inventory received", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${product.name} • ${received} units • damaged: ${damaged} • date: ${receivedDate}`
+    });
+
+    currentAdminFocus = "warehouse";
+    adminPage();
+    alert("Stock received successfully.");
+}
+
+function dispatchWarehouseStock(event) {
+    event.preventDefault();
+    if (!hasAdminAccess()) return;
+
+    const data = new FormData(event.target);
+    const worker = String(data.get("worker") || "").trim();
+    const productName = String(data.get("productName") || "").trim();
+    const quantity = Number(data.get("quantity"));
+    const location = String(data.get("location") || "").trim();
+    const product = products.find(item => String(item.name || "").trim().toLowerCase() === productName.toLowerCase());
+
+    if (!workers.includes(worker) || workerProfiles[worker] === "manager") {
+        alert("Select a valid assistant.");
+        return;
+    }
+
+    if (!product) {
+        alert("Product not found. Add it to warehouse stock before dispatching.");
+        return;
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+        alert("Enter a valid whole-number quantity to dispatch.");
+        return;
+    }
+
+    if (!location) {
+        alert("Enter a destination.");
+        return;
+    }
+
+    const warehouseQuantity = getWarehouseStock(product);
+    if (quantity > warehouseQuantity) {
+        alert(`Not enough warehouse stock. Available: ${warehouseQuantity}.`);
+        return;
+    }
+
+    if (!locations.some(savedLocation => savedLocation.toLowerCase() === location.toLowerCase())) {
+        locations.push(location);
+    }
+
+    warehouseStock[product.id] = warehouseQuantity - quantity;
+    workerInventory[worker] ||= {};
+    workerInventory[worker][product.id] = getWorkerStock(worker, product) + quantity;
+    recordWarehouseMovement("dispatched", product, quantity, {
+        worker,
+        location,
+        note: `Manually dispatched to ${worker}`
+    });
+    saveData();
+    recordActivity("Inventory dispatched", {
+        worker,
+        location,
+        details: `${product.name} • ${quantity} sent to ${worker}`
+    });
+
+    currentAdminFocus = "warehouse";
+    adminPage();
+    alert("Stock dispatched successfully.");
+}
+
+function receiveInventory(event) {
+
+    event.preventDefault();
+
+    const data =
+        new FormData(event.target);
+
+    const productId = Number(data.get("productId"));
+    const product = products.find(item => item.id == productId);
+
+    if (!product) {
+        alert("Please select a valid assigned product.");
+        return;
+    }
+
+    const received =
+        Number(data.get("received"));
+
+    const working =
+        Number(data.get("working"));
+
+    const damaged =
+        Number(data.get("damaged"));
+
+    const receivedDate = String(data.get("receivedDate") || "").trim();
+
+    if (!receivedDate) {
+        alert("Receiving date is required.");
+        return;
+    }
+
+    if (!Number.isInteger(received) || received <= 0 || !Number.isInteger(working) || working < 0 || !Number.isInteger(damaged) || damaged < 0 || working + damaged !== received) {
+
+        alert(
+            "Enter whole-number quantities greater than zero. Working + damaged quantity must equal received quantity."
+        );
+
+        return;
+    }
+
+    product.received += received;
+    product.working += working;
+    product.damaged += damaged;
+    product.lastReceivedDate = receivedDate;
+    warehouseStock[product.id] = getWarehouseStock(product) + working;
+    recordWarehouseMovement("received", product, working, {
+        location: "Warehouse",
+        note: `${received} received; ${damaged} damaged; ${receivedDate}`
+    });
+
+    saveData();
+
+    recordActivity("Inventory received", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${product.name} • ${received} units • damaged: ${damaged} • date: ${receivedDate}`
+    });
+
+    closeModal();
+
+    currentAdminFocus = "warehouse";
+    adminPage();
+
+    alert(
+        "Inventory received successfully."
+    );
+}
+
+function sellPage() {
+    if (currentUserRole === "worker") selectedStaff = currentWorkerName;
+    const saleWorker = currentUserRole === "worker" ? currentWorkerName : selectedStaff;
+
+    const product =
+        products.find(
+            p =>
+                p.id == selectedProduct
+        );
+
+    const quantity =
+        Number(selectedQuantity) || 1;
+
+    const total =
+        product
+        ? quantity * product.price
+        : 0;
+
+    document.getElementById("app").innerHTML = `
+
+    <div class="container">
+
+        <div class="section-header">
+            <h2>New Sale</h2>
+            <button class="secondary-button" onclick="goBack()">← Back</button>
+        </div>
+
+        <div class="form">
+
+            <div class="field">
+
+                <label>
+                    SELECT PRODUCT
+                </label>
+
+                <select
+                    onchange="
+                    selectedProduct=this.value;
+                    selectedQuantity=1;
+                    sellPage()
+                    ">
+
+                    <option value="">
+                        Select product
+                    </option>
+
+                    ${
+                        products.map(product => `
+
+                        <option
+                            value="${product.id}"
+                            ${
+                                product.id ==
+                                selectedProduct
+                                ? "selected"
+                                : ""
+                            }
+                        >
+
+                            ${product.name}
+                            —
+                            ${getWorkerStock(saleWorker, product)}
+                            available
+
+                        </option>
+
+                        `).join("")
+                    }
+
+                </select>
+
+            </div>
+
+            ${
+                product
+                ? `
+
+                <div class="card">
+
+                    <strong>
+                        ${product.name}
+                    </strong>
+
+                    <div class="product-info">
+
+                        Available for ${saleWorker}:
+                        ${getWorkerStock(saleWorker, product)}
+
+                        <br>
+
+                        Price:
+                        ${money(product.price)}
+
+                    </div>
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        QUANTITY
+                    </label>
+
+                    <input
+                        type="number"
+                        min="1"
+                        max="${getWorkerStock(saleWorker, product)}"
+                        value="${quantity}"
+                        oninput="
+                        selectedQuantity=this.value;
+                        sellPage()
+                        "
+                    >
+
+                </div>
+
+                <div class="two">
+
+                    ${currentUserRole === "worker" ? `
+                    <div class="field">
+                        <label>WORKER PROFILE</label>
+                        <input value="${currentWorkerName}" readonly>
+                    </div>
+                    ` : `
+                    <div class="field">
+
+                        <label>
+                            SALE LOCATION
+                        </label>
+
+                        <select
+                            onchange="
+                            selectedLocation=this.value;
+                            sellPage()
+                            ">
+
+                            ${locations.map(location => `
+                                <option value="${location}" ${selectedLocation === location ? "selected" : ""}>${location}</option>
+                            `).join("")}
+
+                        </select>
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>
+                            WORKER PROFILE
+                        </label>
+
+                        <select
+                            onchange="
+                            selectedStaff=this.value;
+                            sellPage()
+                            ">
+
+                            ${workers.map(worker => `
+                                <option value="${worker}" ${selectedStaff === worker ? "selected" : ""}>${worker}</option>
+                            `).join("")}
+
+                        </select>
+
+                    </div>
+                    `}
+
+                </div>
+
+                <div class="total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ${money(total)}
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <label
+                        style="
+                        font-size:12px;
+                        font-weight:700;
+                        ">
+
+                        PAYMENT METHOD
+
+                    </label>
+
+                    <div
+                        class="payment"
+                        style="margin-top:8px"
+                    >
+
+                        <button
+                            class="${
+                                paymentMethod === "upi"
+                                ? "selected"
+                                : ""
+                            }"
+                            onclick="
+                            paymentMethod='upi';
+                            sellPage()
+                            ">
+
+                            📲 UPI / QR
+
+                        </button>
+
+                        <button
+                            class="${
+                                paymentMethod === "cash"
+                                ? "selected"
+                                : ""
+                            }"
+                            onclick="
+                            paymentMethod='cash';
+                            sellPage()
+                            ">
+
+                            💵 CASH
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="primary-button"
+                    onclick="startPayment()">
+
+                    ${
+                        paymentMethod === "upi"
+                        ? "Generate Payment QR"
+                        : "Confirm Cash Payment"
+                    }
+
+                </button>
+
+                `
+                : `
+
+                <div class="empty">
+
+                    Select a product
+                    to start a sale.
+
+                </div>
+
+                `
+            }
+
+        </div>
+
+    </div>
+
+    `;
+}
+
+function buildUpiQrUrl(amount, note = "Sale Payment") {
+    const url = `upi://pay?pa=${encodeURIComponent(upiPaymentId)}&pn=${encodeURIComponent(upiPayeeName)}&am=${Number(amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent(note)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(url)}`;
+}
+
+function updateUpiTimerDisplay() {
+    const timerElement = document.getElementById("upiTimerText");
+    const payButton = document.getElementById("upiConfirmButton");
+
+    if (!timerElement || !payButton) return;
+
+    const remainingMs = Math.max(0, upiPaymentDeadline - Date.now());
+    const totalSeconds = Math.ceil(remainingMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    timerElement.textContent = remainingMs > 0
+        ? `Payment QR valid for ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+        : "Payment QR expired. Please generate a new QR.";
+
+    const isEnabled = remainingMs > 0;
+    payButton.disabled = !isEnabled;
+    payButton.style.opacity = isEnabled ? "1" : "0.55";
+    payButton.style.cursor = isEnabled ? "pointer" : "not-allowed";
+
+    if (remainingMs <= 0) {
+        clearInterval(upiTimerId);
+        upiTimerId = null;
+    }
+}
+
+function startPayment() {
+
+    const product =
+        products.find(
+            p =>
+                p.id == selectedProduct
+        );
+
+    const quantity =
+        Number(selectedQuantity);
+
+    if (
+        !product ||
+        quantity < 1 ||
+        quantity > getAvailableStock(product)
+    ) {
+
+        alert(
+            "Please check product and quantity."
+        );
+
+        return;
+    }
+
+    const total =
+        quantity * product.price;
+
+    if (
+        paymentMethod === "cash"
+    ) {
+
+        completeSale("cash");
+
+        return;
+    }
+
+    if (!upiPaymentId || !upiPayeeName) {
+        alert("Set the receiving UPI ID and payee name in Software before generating a payment QR.");
+        return;
+    }
+
+    upiPaymentDeadline = Date.now() + upiQrDurationMinutes * 60 * 1000;
+    renderUpiPaymentQr();
+}
+
+function renderUpiPaymentQr() {
+    const product = products.find(item => item.id == selectedProduct);
+    if (!product) return;
+
+    const total = Number(selectedQuantity) * product.price;
+    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("modal").innerHTML = `
+        <div class="modal-box center">
+            <p style="font-size:18px;font-weight:700;">${escapeHtml(upiPayeeName)}</p>
+            <img
+                src="${buildUpiQrUrl(total)}"
+                alt="UPI payment QR code"
+                style="width:240px;height:240px;display:block;margin:20px auto;border:10px solid white;box-shadow:0 0 0 1px #ddd;border-radius:12px;background:white;"
+            >
+            <p id="upiTimerText" style="color:#777; margin-top:8px;">
+                Payment QR valid for ${String(upiQrDurationMinutes).padStart(2, "0")}:00
+            </p>
+            <button
+                id="upiConfirmButton"
+                class="primary-button"
+                onclick="completeSale('upi')"
+                disabled
+                style="opacity:0.55;cursor:not-allowed;">
+                Payment received
+            </button>
+            <br><br>
+            <button class="secondary-button" onclick="closeModal()">Cancel</button>
+        </div>
+    `;
+    updateUpiTimerDisplay();
+    clearInterval(upiTimerId);
+    upiTimerId = setInterval(updateUpiTimerDisplay, 1000);
+}
+
+function completeSale(method) {
+
+    if (method === "upi" && (!upiPaymentDeadline || Date.now() >= upiPaymentDeadline)) {
+        alert("This payment QR has expired. Generate a new QR before confirming payment.");
+        return;
+    }
+
+    const product =
+        products.find(
+            p =>
+                p.id == selectedProduct
+        );
+
+    const quantity =
+        Number(selectedQuantity);
+
+    if (
+        !product ||
+        quantity > getAvailableStock(product)
+    ) {
+
+        alert(
+            "Not enough inventory."
+        );
+
+        return;
+    }
+
+    const total =
+        quantity * product.price;
+
+    const saleWorker = currentUserRole === "worker" ? currentWorkerName : selectedStaff;
+    const availableWorkerStock = getWorkerStock(saleWorker, product);
+    if (quantity > availableWorkerStock) {
+        alert("Not enough stock assigned to this worker. Request stock from the warehouse manager.");
+        return;
+    }
+
+    workerInventory[saleWorker] ||= {};
+    workerInventory[saleWorker][product.id] = availableWorkerStock - quantity;
+
+    sales.unshift({
+
+        id: Date.now(),
+
+        productId:
+            product.id,
+
+        productName:
+            product.name,
+
+        productNo:
+            product.productNo || product.sku || "N/A",
+
+        productColor:
+            product.color || "Unknown",
+
+        quantity:
+            quantity,
+
+        total:
+            total,
+
+        payment:
+            method,
+
+        status:
+            "paid",
+
+        cashCollected:
+            false,
+
+        staff:
+            saleWorker,
+
+        location:
+            selectedLocation,
+
+        time:
+            new Date().toISOString()
+
+    });
+
+    recordActivity("Sale completed", {
+        worker: saleWorker,
+        location: selectedLocation,
+        details: `${product.name} × ${quantity} • ${money(total)}`
+    });
+
+    saveData();
+
+    selectedProduct = "";
+    selectedQuantity = 1;
+    selectedLocation = locations[0] || "Main Store";
+    selectedStaff = currentUserRole === "worker" ? currentWorkerName : workers[0] || "Assistant";
+    paymentMethod = "upi";
+
+    closeModal();
+
+    if (upiTimerId) {
+        clearInterval(upiTimerId);
+        upiTimerId = null;
+    }
+    upiPaymentDeadline = 0;
+
+    showPage("sales");
+
+    alert(
+        "Sale completed. Inventory automatically updated."
+    );
+}
+
+function openWorkerOrder() {
+    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("modal").innerHTML = `
+        <div class="modal-box">
+            <div class="section-header">
+                <h2>Order Product</h2>
+                <button onclick="closeModal()" style="border:none;background:none;color:var(--muted);">Close</button>
+            </div>
+            <form class="form" onsubmit="submitInventoryRequest(event)">
+                <div class="field">
+                    <label>PRODUCT</label>
+                    <select name="productId" required>
+                        <option value="">Select product</option>
+                        ${products.map(product => `
+                            <option value="${product.id}">${product.name} • ${product.color || "Unknown"} • ${product.productNo || product.sku}</option>
+                        `).join("")}
+                    </select>
+                </div>
+                <div class="field">
+                    <label>QUANTITY</label>
+                    <input name="quantity" type="number" min="1" value="1" required>
+                </div>
+                <div class="field">
+                    <label>REQUEST DATE</label>
+                    <input name="requestDate" type="date" required>
+                </div>
+                <button class="primary-button" type="submit">Send Request</button>
+            </form>
+        </div>
+    `;
+}
+
+function submitInventoryRequest(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const productId = Number(data.get("productId"));
+    const quantity = Number(data.get("quantity"));
+    const requestDate = String(data.get("requestDate") || "").trim();
+    const product = products.find(item => item.id == productId);
+
+    if (!product) {
+        alert("Please select a valid product.");
+        return;
+    }
+
+    if (!Number.isFinite(quantity) || quantity < 1) {
+        alert("Request quantity must be greater than 0.");
+        return;
+    }
+
+    if (!requestDate) {
+        alert("Request date is required.");
+        return;
+    }
+
+    inventoryRequests.unshift({
+        id: Date.now(),
+        productId: product.id,
+        productName: product.name,
+        productNo: product.productNo || product.sku || "N/A",
+        color: product.color || "Unknown",
+        quantity,
+        requestedBy: currentWorkerName,
+        location: selectedLocation,
+        status: "pending",
+        requestDate,
+        createdAt: new Date().toISOString()
+    });
+
+    saveData();
+    closeModal();
+    showPage("worker");
+    recordActivity("Inventory request sent", {
+        worker: currentWorkerName,
+        location: selectedLocation,
+        details: `${product.name} • ${quantity} requested • ${product.color || "Unknown"} • ${product.productNo || product.sku}`
+    });
+    alert("Your inventory request was sent to the admin.");
+}
+
+function approveInventoryRequest(requestId) {
+    const request = inventoryRequests.find(item => item.id == requestId);
+    if (!request) return;
+
+    const product = products.find(item => item.id == request.productId);
+    const warehouseQuantity = product ? getWarehouseStock(product) : 0;
+    if (!product || request.quantity > warehouseQuantity) {
+        alert(`Not enough warehouse stock. Available: ${warehouseQuantity}.`);
+        return;
+    }
+
+    warehouseStock[product.id] -= request.quantity;
+    workerInventory[request.requestedBy] ||= {};
+    workerInventory[request.requestedBy][product.id] = getWorkerStock(request.requestedBy, product) + request.quantity;
+    recordWarehouseMovement("dispatched", product, request.quantity, {
+        worker: request.requestedBy,
+        location: request.location || selectedLocation,
+        note: `Request approved on ${request.requestDate}`
+    });
+
+    request.status = "approved";
+    request.approvedBy = selectedStaff;
+    request.fulfilledAt = new Date().toISOString();
+    saveData();
+    adminPage();
+    recordActivity("Inventory request approved", {
+        worker: request.requestedBy,
+        location: selectedLocation,
+        details: `${request.productName} • ${request.quantity} dispatched to ${request.requestedBy} • ${request.color || "Unknown"}`
+    });
+    alert("Inventory request approved and stock added.");
+}
+
+function workerPage() {
+    document.body.classList.remove("admin-workspace");
+    const mySales = sales.filter(sale => (sale.staff || "Assistant") === currentWorkerName);
+    const myPaidSales = mySales.filter(sale => sale.status === "paid");
+    const myCashSales = mySales.filter(sale => sale.payment === "cash");
+    const myCashTotal = myCashSales.reduce((sum, sale) => sum + sale.total, 0);
+    const myTotalSales = mySales.reduce((sum, sale) => sum + sale.total, 0);
+    const myPaidSalesTotal = myPaidSales.reduce((sum, sale) => sum + sale.total, 0);
+    const payrollSummary = getPayrollSummary(currentWorkerName);
+    const incentiveSalesTotal = payrollSummary ? payrollSummary.salesTotal : myPaidSalesTotal;
+    const workerStock = products.map(product => ({
+        ...product,
+        stock: getStock(product)
+    }));
+
+    document.getElementById("app").innerHTML = `
+        <div class="container">
+            <div class="section-header">
+                <h2>Assistant Panel</h2>
+                <div class="admin-action-row">
+                    <button class="primary-button" onclick="showPage('sell')">New Sale</button>
+                    <button class="secondary-button" onclick="goBack()">← Back</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Logged in as</div>
+                <div class="card-value">${currentWorkerName}</div>
+            </div>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="card-title">Profile</div>
+                    <div class="card-value">${getWorkerProfile(currentWorkerName)}</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Total Sales</div>
+                    <div class="card-value">${money(myTotalSales)}</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Cash Sales</div>
+                    <div class="card-value">${money(myCashTotal)}</div>
+                </div>
+            </div>
+
+            ${payrollSummary ? `
+            <div class="section">
+                <div class="panel">
+                    <h3>My Salary & Incentive</h3>
+                    <div class="metric-stack">
+                        <div class="metric-box"><span>Pay period</span><strong>${payrollSummary.cycle.label} · ${payrollSummary.record.frequency}</strong></div>
+                        <div class="metric-box"><span>Location sales</span><strong>${money(incentiveSalesTotal)}</strong></div>
+                        <div class="metric-box"><span>Salary</span><strong>${money(payrollSummary.salaryDue)}</strong></div>
+                        <div class="metric-box"><span>Earned incentive</span><strong>${money(payrollSummary.incentiveDue)}</strong></div>
+                        <div class="metric-box"><span>Total payable</span><strong>${money(payrollSummary.totalDue)}</strong></div>
+                    </div>
+                    <p class="product-info">${payrollSummary.paid ? "Paid for this period." : `${payrollSummary.earnedIncentives.length} incentive target(s) achieved. Payment is handled by Admin.`}</p>
+                </div>
+            </div>
+            ` : ""}
+
+            <div class="actions">
+                <button class="action primary" onclick="openReceive()">
+                    <span class="action-icon">📦</span>
+                    Receive Inventory
+                </button>
+
+                <button class="action" onclick="openWorkerOrder()">
+                    <span class="action-icon">🧾</span>
+                    Order Product
+                </button>
+
+                <button class="action" onclick="showPage('sell')">
+                    <span class="action-icon">🛒</span>
+                    New Sale
+                </button>
+
+                <button class="action" onclick="showPage('sales')">
+                    <span class="action-icon">📊</span>
+                    My Sales
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>My Incentive Targets</h2>
+                </div>
+                ${incentiveList.length ? incentiveList.map(item => {
+                    const targetSales = Number(item.targetSales || 0);
+                    const progress = targetSales > 0 ? Math.min(100, (incentiveSalesTotal / targetSales) * 100) : 0;
+                    return `
+                        <div class="product">
+                            <div>
+                                <div class="product-name">${item.title}</div>
+                                <div class="product-info">
+                                    ${item.note || "Worker reward"}<br>
+                                    Sales target: ${targetSales > 0 ? money(targetSales) : "Not set"}<br>
+                                    Your paid sales this period: ${money(incentiveSalesTotal)}
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <strong>${money(item.amount)}</strong><br>
+                                ${targetSales > 0 ? `<small>${progress.toFixed(0)}% reached</small>` : ""}
+                            </div>
+                        </div>
+                    `;
+                }).join("") : `<div class="empty">No incentive targets available.</div>`}
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>My Inventory</h2>
+                </div>
+                ${workerStock.length ? workerStock.map(product => `
+                    <div class="product">
+                        <div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-info">
+                                Color: ${product.color || "Unknown"}<br>
+                                Product No: ${product.productNo || product.sku}<br>
+                                Available: ${product.stock}
+                            </div>
+                        </div>
+                        <strong>${money(product.price)}</strong>
+                    </div>
+                `).join("") : `<div class="empty">No inventory assigned yet.</div>`}
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Recent Worker Activity</h2>
+                </div>
+                ${mySales.length ? mySales.slice(0, 6).map(sale => `
+                    <div class="product">
+                        <div>
+                            <div class="product-name">${sale.productName} × ${sale.quantity}</div>
+                            <div class="product-info">
+                                ${new Date(sale.time).toLocaleString()}<br>
+                                Location: ${sale.location || "Main Store"}
+                            </div>
+                            <span class="badge green">${sale.payment.toUpperCase()}</span>
+                        </div>
+                        <strong>${money(sale.total)}</strong>
+                    </div>
+                `).join("") : `<div class="empty">No sales recorded for this worker yet.</div>`}
+            </div>
+        </div>
+    `;
+}
+
+function openAdminDetail(section) {
+    currentAdminFocus = section;
+    showPage("admin");
+}
+
+function toggleAdminSidebar(button) {
+    const shell = button.closest(".admin-shell");
+    const isCollapsed = shell.classList.toggle("sidebar-collapsed");
+    button.setAttribute("aria-expanded", String(!isCollapsed));
+    button.setAttribute("aria-label", isCollapsed ? "Expand navigation" : "Collapse navigation");
+    button.title = isCollapsed ? "Expand navigation" : "Collapse navigation";
+}
+
+function renderAdminSidebar(activeSection) {
+    return `
+        <button class="sidebar-toggle" type="button" aria-label="Collapse navigation" aria-expanded="true" aria-controls="admin-sidebar" title="Collapse navigation" onclick="toggleAdminSidebar(this)">⋯</button>
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-mark">◈</div>
+                <div>
+                    <small>BUSINESS CONTROL</small>
+                    Zero3Aryans
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <button class="${activeSection === "dashboard" ? "active" : ""}" onclick="openAdminDetail('dashboard')">Dashboard</button>
+                <button class="${activeSection === "activity" ? "active" : ""}" onclick="activityPage()">Recent Activity</button>
+                ${currentUserRole === "admin" ? `<button class="${activeSection === "software" ? "active" : ""}" onclick="softwarePage()">Software</button>` : ""}
+                ${currentUserRole === "admin" ? `<button class="${activeSection === "subscription" ? "active" : ""}" onclick="renderAdminSubscription()">Plan & Billing</button>` : ""}
+                <button class="${activeSection === "team" ? "active" : ""}" onclick="openAdminDetail('team')">Team</button>
+                <button class="${activeSection === "locations" ? "active" : ""}" onclick="openAdminDetail('locations')">Locations</button>
+                <button class="${activeSection === "warehouse" ? "active" : ""}" onclick="openAdminDetail('warehouse')">Warehouse</button>
+                <button class="${activeSection === "salary" ? "active" : ""}" onclick="openAdminDetail('salary')">Salary</button>
+                <button class="${activeSection === "incentives" ? "active" : ""}" onclick="incentivesPage()">Incentives</button>
+                <button class="${activeSection === "payments" ? "active" : ""}" onclick="paymentsPage()">Payments</button>
+            </div>
+            <div class="sidebar-utility">
+                <button onclick="openSettings()">⚙ Settings</button>
+                ${currentUserRole === "admin" ? `<button onclick="openPanelAccess()">Switch account</button>` : ""}
+                <button onclick="logout()">Log out</button>
+            </div>
+        </aside>
+    `;
+}
+
+function formatActivityDetails(details) {
+    if (typeof details === "string") return details;
+    if (!details || typeof details !== "object") return "";
+
+    return Object.entries(details).map(([key, value]) => {
+        if (key === "details") return formatActivityDetails(value);
+        if (value && typeof value === "object") return formatActivityDetails(value);
+        return value ? `${key}: ${value}` : "";
+    }).filter(Boolean).join(" · ");
+}
+
+function activityPage() {
+    if (!hasAdminAccess()) return;
+
+    document.body.classList.add("admin-workspace");
+    document.getElementById("app").innerHTML = `
+        <div class="admin-shell">
+            ${renderAdminSidebar("activity")}
+            <main class="admin-main">
+                <header class="admin-header">
+                    <h1>Recent Activity</h1>
+                    <div class="admin-action-row">
+                        <button class="secondary-button" onclick="openAdminPanel()">Back to Dashboard</button>
+                    </div>
+                </header>
+                <section class="panel">
+                    <div class="payment-list">
+                        ${activityLog.length ? activityLog.slice(0, 50).map(activity => `
+                            <div class="payment-item">
+                                <div class="team-meta">
+                                    <strong>${escapeHtml(activity.action || "Activity")}</strong>
+                                    <small>By ${escapeHtml(activity.worker || "System")} · ${escapeHtml(activity.location || "Unknown location")}</small>
+                                    ${formatActivityDetails(activity.details) ? `<small>${escapeHtml(formatActivityDetails(activity.details))}</small>` : ""}
+                                </div>
+                                <small>${new Date(activity.time).toLocaleString()}</small>
+                            </div>
+                        `).join("") : `<div class="empty">No activity recorded yet.</div>`}
+                    </div>
+                </section>
+            </main>
+        </div>
+    `;
+}
+
+function softwarePage() {
+    if (currentUserRole !== "admin") return;
+
+    document.body.classList.add("admin-workspace");
+    document.getElementById("app").innerHTML = `
+        <div class="admin-shell">
+            ${renderAdminSidebar("software")}
+            <main class="admin-main">
+                <header class="admin-header">
+                    <h1>Software</h1>
+                    <div class="admin-action-row">
+                        <button class="secondary-button" onclick="openAdminPanel()">Back to Dashboard</button>
+                    </div>
+                </header>
+                <section class="panel" style="max-width:760px;">
+                    <h3>Payment receiving account</h3>
+                    <p class="product-info">Enter the UPI ID or Razorpay UPI VPA that should receive payments. QR payments go directly to this account. Verify each credit in the account before confirming it. Razorpay account IDs and automatic verification require a connected Razorpay backend.</p>
+                    <form class="form" onsubmit="savePaymentSettings(event)">
+                        <div class="field">
+                            <label for="upiPaymentId">Your UPI ID / Razorpay UPI VPA</label>
+                            <input id="upiPaymentId" name="upiPaymentId" value="${escapeHtml(upiPaymentId)}" placeholder="name@bank or merchant@razorpay" autocomplete="off" required>
+                        </div>
+                        <div class="field">
+                            <label for="upiPayeeName">Payee name</label>
+                            <input id="upiPayeeName" name="upiPayeeName" value="${escapeHtml(upiPayeeName)}" placeholder="Account or business name" autocomplete="organization" required>
+                        </div>
+                        <div class="two">
+                            <div class="field">
+                                <label for="paymentBankName">Bank name</label>
+                                <input id="paymentBankName" name="paymentBankName" value="${escapeHtml(paymentBankName)}" autocomplete="off">
+                            </div>
+                            <div class="field">
+                                <label for="paymentAccountHolder">Account holder</label>
+                                <input id="paymentAccountHolder" name="paymentAccountHolder" value="${escapeHtml(paymentAccountHolder)}" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="two">
+                            <div class="field">
+                                <label for="paymentAccountNumber">Account number</label>
+                                <input id="paymentAccountNumber" name="paymentAccountNumber" value="${escapeHtml(paymentAccountNumber)}" inputmode="numeric" autocomplete="off">
+                            </div>
+                            <div class="field">
+                                <label for="paymentIfscCode">IFSC code</label>
+                                <input id="paymentIfscCode" name="paymentIfscCode" value="${escapeHtml(paymentIfscCode)}" autocapitalize="characters" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="upiQrDurationMinutes">QR expiry</label>
+                            <select id="upiQrDurationMinutes" name="upiQrDurationMinutes">
+                                <option value="3" ${upiQrDurationMinutes === 3 ? "selected" : ""}>3 minutes</option>
+                                <option value="5" ${upiQrDurationMinutes === 5 ? "selected" : ""}>5 minutes</option>
+                            </select>
+                        </div>
+                        <button class="primary-button" type="submit">Save payment details</button>
+                        <div id="paymentSettingsNotice" class="auth-notice" role="status"></div>
+                    </form>
+                </section>
+            </main>
+        </div>
+    `;
+}
+
+function adminPage() {
+    if (currentUserRole === "admin") {
+        const subscriptionStatus = getAdminSubscriptionStatus();
+        if (subscriptionStatus === "not-started" || subscriptionStatus === "expired") {
+            renderAdminSubscription();
+            return;
+        }
+        document.body.classList.remove("auth-locked");
+    }
+
+    document.body.classList.add("admin-workspace");
+    const salesSummary = sales.slice(0, 8);
+    const pendingRequests = inventoryRequests.filter(item => item.status === "pending");
+    const workerTotals = workers.map(worker => {
+        const workerSales = sales.filter(sale => (sale.staff || "Assistant") === worker);
+        const totalSales = workerSales.reduce((sum, sale) => sum + sale.total, 0);
+        const cashReceived = workerSales
+            .filter(sale => sale.payment === "cash")
+            .reduce((sum, sale) => sum + sale.total, 0);
+
+        return {
+            name: worker,
+            id: workerIds[worker] || "W-000",
+            status: workerStatus[worker] !== false,
+            totalSales,
+            cashReceived,
+        };
+    });
+
+    const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
+    const cashCollection = getCashCollectionTotals();
+    const cashSales = cashCollection.total;
+    const upiSales = sales.filter(sale => sale.payment === "upi").reduce((sum, sale) => sum + sale.total, 0);
+    const baseValue = Math.max(totalRevenue, 1);
+    const saleContribution = Math.min(100, ((cashSales + upiSales) / baseValue) * 100 || 0);
+    const today = new Date();
+    const last7Days = sales.filter(sale => {
+        const saleDate = new Date(sale.time);
+        const diff = (today - saleDate) / (1000 * 60 * 60 * 24);
+        return diff <= 7;
+    });
+    const weeklySales = last7Days.reduce((sum, sale) => sum + sale.total, 0);
+    const averageSale = sales.length ? totalRevenue / sales.length : 0;
+    const topColors = Object.entries(
+        sales.reduce((acc, sale) => {
+            const product = products.find(item => item.id == sale.productId);
+            const key = sale.productColor || product?.color || "Unknown";
+            acc[key] = (acc[key] || 0) + Number(sale.quantity || 0);
+            return acc;
+        }, {})
+    ).sort((a, b) => b[1] - a[1]).slice(0, 3);
+
+    const colorStats = {};
+    const numberStats = {};
+
+    sales.forEach(sale => {
+        const product = products.find(item => item.id == sale.productId);
+        const colorKey = sale.productColor || product?.color || "Unknown";
+        const numberKey = sale.productNo || product?.productNo || product?.sku || sale.productName || "Unknown";
+
+        colorStats[colorKey] = (colorStats[colorKey] || 0) + Number(sale.quantity || 0);
+        numberStats[numberKey] = (numberStats[numberKey] || 0) + Number(sale.quantity || 0);
+    });
+
+    const topNumbers = Object.entries(numberStats).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const totalIncentives = incentiveList.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    document.getElementById("app").innerHTML = `
+        <div class="admin-shell">
+            ${renderAdminSidebar(currentAdminFocus)}
+
+            <main class="admin-main">
+                <header class="admin-header">
+                    <h1>${currentUserRole === "manager" ? "Manager Dashboard" : "Admin Dashboard"}</h1>
+                    <div class="admin-action-row">
+                        <button class="secondary-button" onclick="goBack()">← Back</button>
+                        <button class="primary-button" onclick="openAdminPanel()">Refresh</button>
+                    </div>
+                </header>
+
+                <section class="admin-panel-grid">
+                    <div class="summary-card">
+                        <div class="label">Sale Contribution</div>
+                        <div class="big">${saleContribution.toFixed(1)}%</div>
+                        <div class="sub">Active contribution from all payment channels</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Revenue Balance</div>
+                        <div class="big">${money(totalRevenue)}</div>
+                        <div class="sub">Lifetime revenue balance</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Revenue Trend</div>
+                        <div class="big">${money(weeklySales)}</div>
+                        <div class="sub">Last 7 days performance</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Real Time Comparison</div>
+                        <div class="big">${money(averageSale)}</div>
+                        <div class="sub">Avg. sale value per transaction</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Business Hours</div>
+                        <div class="big">09:00 - 21:00</div>
+                        <div class="sub">Operational window</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Business Days</div>
+                        <div class="big">Mon - Sat</div>
+                        <div class="sub">Working calendar</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Payments - UPI</div>
+                        <div class="big">${money(upiSales)}</div>
+                        <div class="sub">Total UPI payment volume</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Payments - Cash</div>
+                        <div class="big">${money(cashSales)}</div>
+                        <div class="sub">Total cash payment volume</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Collected Cash</div>
+                        <div class="big">${money(cashCollection.collected)}</div>
+                        <div class="sub">Cash handed over from all locations</div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="label">Uncollected Cash</div>
+                        <div class="big">${money(cashCollection.uncollected)}</div>
+                        <div class="sub">Cash still held at locations</div>
+                    </div>
+                </section>
+
+                <section class="panel" style="margin-top:16px;">
+                    <h3>Cash by Location</h3>
+                    ${locations.length ? locations.map(location => {
+                        const totals = getCashCollectionTotals(location);
+                        return `
+                            <div class="team-row">
+                                <div class="team-meta">
+                                    <strong>${location}</strong>
+                                    <span>Collected: ${money(totals.collected)}</span>
+                                    <span>Uncollected: ${money(totals.uncollected)}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join("") : `<div class="empty">No locations configured.</div>`}
+                </section>
+
+                <section class="panel" id="admin-warehouse-section" style="margin-top:16px;">
+                    <h3>Warehouse</h3>
+                    <div class="section">
+                        <h3>Add Inventory Item</h3>
+                        <div class="inline-form">
+                            <div class="field"><label>Product name</label><input id="newProductName" placeholder="Product name"></div>
+                            <div class="field"><label>SKU</label><input id="newProductSku" placeholder="SKU"></div>
+                            <div class="field"><label>Category</label><input id="newProductCategory" placeholder="Category"></div>
+                            <div class="field"><label>Product number</label><input id="newProductNo" placeholder="Product number"></div>
+                            <div class="field"><label>Color</label><input id="newProductColor" placeholder="Color"></div>
+                            <div class="field"><label>Unit price</label><input id="newProductPrice" type="number" min="0" step="0.01" placeholder="Price"></div>
+                            <div class="field"><label>Opening warehouse stock</label><input id="newProductQuantity" type="number" min="0" step="1" value="0"></div>
+                            <button class="form-button" onclick="addProduct()">Save Item</button>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>Receive Stock</h3>
+                        <form class="inline-form" onsubmit="receiveWarehouseStock(event)">
+                            <div class="field"><label>Product name</label><input name="productName" list="warehouseProductNames" placeholder="Enter product name" required><datalist id="warehouseProductNames">${products.map(product => `<option value="${escapeHtml(product.name)}">`).join("")}</datalist></div>
+                            <div class="field"><label>Quantity received</label><input name="quantity" type="number" min="1" step="1" required></div>
+                            <div class="field"><label>Unit price for new product</label><input name="price" type="number" min="0" step="0.01" placeholder="Optional"></div>
+                            <div class="field"><label>Damaged units</label><input name="damaged" type="number" min="0" step="1" value="0" required></div>
+                            <div class="field"><label>Received date</label><input name="receivedDate" type="date" required></div>
+                            <button class="form-button" type="submit">Receive into Warehouse</button>
+                        </form>
+                    </div>
+
+                    <div class="section">
+                        <h3>Dispatch to Assistant</h3>
+                        <form class="inline-form" onsubmit="dispatchWarehouseStock(event)">
+                            <div class="field"><label>Assistant</label><select name="worker" required>${workers.filter(worker => workerProfiles[worker] !== "manager").map(worker => `<option value="${worker}">${worker}</option>`).join("")}</select></div>
+                            <div class="field"><label>Product name</label><input name="productName" list="dispatchProductNames" placeholder="Enter product name" required><datalist id="dispatchProductNames">${products.map(product => `<option value="${escapeHtml(product.name)}" label="${product.sku} · ${getWarehouseStock(product)} in warehouse">`).join("")}</datalist></div>
+                            <div class="field"><label>Quantity to send</label><input name="quantity" type="number" min="1" step="1" required></div>
+                            <div class="field"><label>Destination</label><input name="location" list="dispatchLocations" placeholder="Enter destination" required><datalist id="dispatchLocations">${locations.map(location => `<option value="${escapeHtml(location)}">`).join("")}</datalist></div>
+                            <button class="form-button" type="submit" ${products.length && workers.some(worker => workerProfiles[worker] !== "manager") ? "" : "disabled"}>Dispatch Stock</button>
+                        </form>
+                    </div>
+
+                    <div class="section">
+                        <h3>Stock on Hand</h3>
+                        ${products.length ? products.map(product => `
+                            <div class="team-row">
+                                <div class="team-meta">
+                                    <strong>${product.name} · ${product.productNo || product.sku}</strong>
+                                    <span>${product.category} · SKU ${product.sku} · ${product.color || "Unknown"} · ${money(product.price)}</span>
+                                    <span>Warehouse: ${getWarehouseStock(product)} · Assigned to assistants: ${workers.reduce((sum, worker) => sum + getWorkerStock(worker, product), 0)}</span>
+                                </div>
+                            </div>
+                        `).join("") : `<div class="empty">No inventory items yet.</div>`}
+                    </div>
+
+                    <div class="section">
+                        <h3>Warehouse Movement History</h3>
+                        ${warehouseMovements.length ? warehouseMovements.slice(0, 20).map(movement => `
+                            <div class="payment-item">
+                                <div>
+                                    <strong>${movement.type === "dispatched" ? "Sent to " + movement.worker : "Received into Warehouse"} · ${movement.productName}</strong><br>
+                                    <small>${movement.quantity} units · ${movement.productNo} · ${movement.category} · ${movement.color} · ${movement.location} · ${new Date(movement.time).toLocaleString()}</small>
+                                    ${movement.type === "dispatched" ? `<br><small>Dispatch date: ${new Date(movement.time).toLocaleDateString()}</small>` : ""}
+                                    ${movement.note ? `<br><small>${movement.note}</small>` : ""}
+                                </div>
+                            </div>
+                        `).join("") : `<div class="empty">No warehouse movements recorded.</div>`}
+                    </div>
+                </section>
+
+                <section class="admin-panel-grid" style="margin-top:16px;">
+                    <div class="panel" id="admin-team-section">
+                        <h3>Team</h3>
+                        ${currentUserRole === "admin" ? `
+                        <form class="inline-form" onsubmit="addWorker(event)" style="margin-bottom:16px;">
+                            <div class="field"><label for="newWorkerName">Full name</label><input id="newWorkerName" name="name" autocomplete="name" required></div>
+                            <div class="field"><label for="newWorkerUsername">Username</label><input id="newWorkerUsername" name="username" autocomplete="off" required></div>
+                            <div class="field"><label for="newWorkerRole">Role</label><select id="newWorkerRole" name="role"><option value="worker">Assistant</option><option value="manager">Manager</option></select></div>
+                            <div class="field"><label for="newWorkerPassword">Temporary password</label><div class="password-input"><input id="newWorkerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required><button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button></div></div>
+                            <button class="form-button" type="submit">Create login</button>
+                        </form>
+                        ` : ""}
+                        ${workerTotals.length ? workerTotals.map(worker => `
+                            <div class="team-row">
+                                <div class="team-meta">
+                                    <strong>${worker.name}</strong>
+                                    <span class="team-id">${worker.id}</span>
+                                    <span>${getWorkerProfile(worker.name)} • ${money(worker.totalSales)}</span>
+                                </div>
+                                <div>
+                                    <span class="status-pill ${worker.status ? "active" : "inactive"}">${worker.status ? "Active" : "Inactive"}</span>
+                                </div>
+                            </div>
+                        `).join("") : `<div class="empty">No workers assigned yet.</div>`}
+                    </div>
+
+                    <div class="panel" id="admin-locations-section">
+                        <h3>Assign Location & Worker</h3>
+                        <div class="inline-form">
+                            <div class="field">
+                                <label for="newLocationName">Add location</label>
+                                <input id="newLocationName" type="text" placeholder="Enter any location name">
+                            </div>
+                            <button class="primary-button" type="button" onclick="addLocation()">Add location</button>
+                        </div>
+                        <div class="input-stack">
+                            <div class="field">
+                                <label>WORKER</label>
+                                <select id="assignLocationWorker">
+                                    ${workers.map(worker => `<option value="${worker}">${worker}</option>`).join("")}
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="assignLocationValue">LOCATION</label>
+                                <input id="assignLocationValue" type="text" list="assignLocationOptions" placeholder="Type or choose a location" required>
+                                <datalist id="assignLocationOptions">
+                                    ${locations.map(location => `<option value="${escapeHtml(location)}">`).join("")}
+                                </datalist>
+                            </div>
+                            <button class="primary-button" onclick="assignLocationToWorker()">Assign</button>
+                        </div>
+                    </div>
+
+                    <div class="panel" id="admin-payroll-section" style="grid-column:1 / -1;">
+                        <h3>Salary Management</h3>
+                        <div class="input-stack">
+                            <div class="inline-form">
+                                <div class="field">
+                                    <label for="payrollWorker">Worker name</label>
+                                    <select id="payrollWorker" onchange="loadPayrollDetails(this.value)">${workers.map(worker => `<option value="${worker}">${worker}</option>`).join("")}</select>
+                                </div>
+                                <div class="field">
+                                    <label for="payrollLocation">Location</label>
+                                    <select id="payrollLocation">${locations.map(location => `<option value="${location}">${location}</option>`).join("")}</select>
+                                </div>
+                                <div class="field">
+                                    <label for="payrollAmount">Salary amount</label>
+                                    <input id="payrollAmount" type="number" min="0" step="0.01" placeholder="Salary amount">
+                                </div>
+                                <div class="field">
+                                    <label for="payrollFrequency">Pay frequency</label>
+                                    <select id="payrollFrequency">
+                                        <option value="monthly">Monthly</option>
+                                        <option value="yearly">Yearly</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="payrollAccountHolder">Account holder name</label>
+                                    <input id="payrollAccountHolder" autocomplete="off" placeholder="Name on bank account">
+                                </div>
+                                <div class="field">
+                                    <label for="payrollBankName">Bank name</label>
+                                    <input id="payrollBankName" autocomplete="off" placeholder="Bank name">
+                                </div>
+                                <div class="field">
+                                    <label for="payrollAccountNumber">Account number</label>
+                                    <input id="payrollAccountNumber" inputmode="numeric" autocomplete="off" placeholder="Bank account number">
+                                </div>
+                                <div class="field">
+                                    <label for="payrollIfsc">IFSC code</label>
+                                    <input id="payrollIfsc" autocapitalize="characters" autocomplete="off" placeholder="IFSC code">
+                                </div>
+                                <button class="form-button" onclick="savePayroll()">Save Salary</button>
+                            </div>
+                        </div>
+                        <div class="metric-stack" style="margin-top:16px;">
+                            ${workers.filter(worker => payrollRecords[worker]).map(workerName => {
+                                const payroll = getPayrollSummary(workerName);
+                                return `
+                                    <div class="metric-box" style="align-items:flex-start;">
+                                        <div class="team-meta">
+                                            <strong>Worker: ${workerName} · Location: ${payroll.record.location}</strong>
+                                            <span>${money(payroll.record.salaryAmount)} ${payroll.record.frequency} salary · ${payroll.cycle.label}</span>
+                                            <span>Account holder: ${payroll.record.accountHolder || "Not added"}</span>
+                                            <span>Bank: ${payroll.record.bankName || "Not added"}</span>
+                                            <span>Account: ${payroll.record.accountNumber || "Not added"}</span>
+                                            <span>IFSC: ${payroll.record.ifscCode || "Not added"}</span>
+                                            <span>Sales this period: ${money(payroll.salesTotal)}</span>
+                                            <span>Earned incentives: ${money(payroll.incentiveDue)}</span>
+                                            ${payroll.earnedIncentives.map(item => `<span>${item.title}: ${money(item.amount)} · target ${money(item.targetSales)}</span>`).join("")}
+                                            <strong>Salary + incentive: ${money(payroll.totalDue)}</strong>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join("") || `<div class="empty">No salary records yet. Add salary details above.</div>`}
+                        </div>
+                    </div>
+
+                    <div class="panel" id="admin-payout-section" style="grid-column:1 / -1;">
+                        <h3>Salary Payout</h3>
+                        <div class="metric-stack">
+                            ${workers.filter(worker => payrollRecords[worker]).map(workerName => {
+                                const payroll = getPayrollSummary(workerName);
+                                return `
+                                    <div class="metric-box" style="align-items:flex-start;">
+                                        <div class="team-meta">
+                                            <strong>${workerName} · ${payroll.record.location} · ${payroll.cycle.label}</strong>
+                                            <span>Salary: ${money(payroll.salaryDue)}</span>
+                                            <span>Incentive: ${money(payroll.incentiveDue)}</span>
+                                            <span>Account holder: ${payroll.record.accountHolder || "Not added"}</span>
+                                            <span>Bank: ${payroll.record.bankName || "Not added"}</span>
+                                            <span>Account: ${payroll.record.accountNumber || "Not added"}</span>
+                                            <span>IFSC: ${payroll.record.ifscCode || "Not added"}</span>
+                                            <strong>Total payout: ${money(payroll.totalDue)}</strong>
+                                            <span>${payroll.paid ? "Already paid this period" : "Ready for Admin payment"}</span>
+                                        </div>
+                                        <button class="${payroll.paid || payroll.totalDue <= 0 ? "secondary-button" : "primary-button"}" onclick="markPayrollPaid('${workerName}')" ${payroll.paid || payroll.totalDue <= 0 ? "disabled" : ""}>${payroll.paid ? "Paid" : "Pay Salary + Incentive"}</button>
+                                    </div>
+                                `;
+                            }).join("") || `<div class="empty">Set up a salary before recording a payout.</div>`}
+                        </div>
+                        <div class="payment-list">
+                            <h3>Payroll History</h3>
+                            ${payrollHistory.slice(0, 10).map(payment => `
+                                <div class="payment-item">
+                                    <div>
+                                        <strong>${payment.worker} · ${payment.location}</strong><br>
+                                        <small>${payment.cycle} · ${new Date(payment.paidAt).toLocaleString()}</small>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <strong>${money(payment.totalAmount)}</strong><br>
+                                        <small>Salary ${money(payment.salaryAmount)} + incentive ${money(payment.incentiveAmount)}</small>
+                                        <br><small>${payment.bankName || "Bank not recorded"} · Account ${payment.accountNumber || "Not recorded"} · IFSC ${payment.ifscCode || "Not recorded"}</small>
+                                    </div>
+                                </div>
+                            `).join("") || `<div class="empty">No payroll payments recorded.</div>`}
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <h3>Incentive Column</h3>
+                        <div class="input-stack">
+                            <div class="inline-form">
+                                <div class="field">
+                                    <label>Title</label>
+                                    <input id="incentiveTitle" placeholder="Bonus / Discount">
+                                </div>
+                                <div class="field">
+                                    <label>Payout Amount</label>
+                                    <input id="incentiveAmount" type="number" min="0" value="0">
+                                </div>
+                                <div class="field">
+                                    <label>Sales Target (₹)</label>
+                                    <input id="incentiveTargetSales" type="number" min="0" value="0">
+                                </div>
+                                <div class="field">
+                                    <label>Note</label>
+                                    <input id="incentiveNote" placeholder="Sales reward">
+                                </div>
+                                <button class="form-button" onclick="addIncentive()">Add</button>
+                            </div>
+                        </div>
+                        <div class="incentive-list">
+                            ${incentiveList.length ? incentiveList.map(item => `
+                                <div class="incentive-item">
+                                    <div>
+                                        <strong>${item.title}</strong><br>
+                                        <small>${item.note} · Sales target: ${Number(item.targetSales || 0) > 0 ? money(item.targetSales) : "Not set"}</small>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <strong>${money(item.amount)}</strong><br>
+                                        <button class="danger-button" onclick="removeIncentive(${item.id})">Delete</button>
+                                    </div>
+                                </div>
+                            `).join("") : `<div class="empty">No incentives added yet.</div>`}
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <h3>Payments</h3>
+                        <div class="metric-stack">
+                            <div class="metric-box">
+                                <span>Cash</span>
+                                <strong>${money(cashSales)}</strong>
+                            </div>
+                            <div class="metric-box">
+                                <span>UPI</span>
+                                <strong>${money(upiSales)}</strong>
+                            </div>
+                            <div class="metric-box">
+                                <span>Lifetime Total</span>
+                                <strong>${money(totalRevenue)}</strong>
+                            </div>
+                        </div>
+                        <div class="payment-list">
+                            ${sales.slice(0, 5).map(sale => `
+                                <div class="payment-item">
+                                    <div>
+                                        <strong>${sale.productName}</strong><br>
+                                        <small>${new Date(sale.time).toLocaleString()}</small>
+                                        ${sale.payment === "upi" && sale.payerUpiId ? `<br><small>Paid from: ${escapeHtml(sale.payerUpiId)}</small>` : ""}
+                                        ${sale.payment === "upi" && sale.paymentId ? `<br><small>Reference: ${escapeHtml(sale.paymentId)}</small>` : ""}
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <strong>${money(sale.total)}</strong><br>
+                                        <span>${sale.payment.toUpperCase()}</span>
+                                    </div>
+                                </div>
+                            `).join("") || `<div class="empty">No payments yet.</div>`}
+                        </div>
+                    </div>
+
+                    <div class="panel" style="grid-column:1 / -1;">
+                        <h3>Worker Access Control</h3>
+                        <div class="password-grid">
+                            ${workers.map(worker => {
+                                const loginAccount = authAccounts.find(account => account.workerName === worker && ["worker", "manager"].includes(account.role));
+                                const encodedAccountId = loginAccount ? encodeURIComponent(loginAccount.id) : "";
+                                const passwordAvailable = loginAccount && recentlySetStaffPasswords.has(loginAccount.id);
+                                return `
+                                    <div class="password-box">
+                                        <div>
+                                            <strong>${worker}</strong><br>
+                                            <small>${workerIds[worker] || "W-000"}</small><br>
+                                            <small>${currentUserRole === "admin" && loginAccount ? `Login: ${escapeHtml(loginAccount.username || loginAccount.email || "Account")}` : loginAccount ? "Login configured" : "No login account"}</small>
+                                        </div>
+                                        <div class="team-meta">
+                                            <span style="font-weight:700; color:var(--muted);">${loginAccount ? "Password protected" : "Login not set up"}</span>
+                                            ${currentUserRole === "admin" && loginAccount ? `<small id="staff-password-${encodedAccountId}" hidden></small><button class="secondary-button" type="button" onclick="toggleStaffPasswordVisibility('${encodedAccountId}', this)" ${passwordAvailable ? "" : "disabled"} title="Set a new password before it can be revealed">${passwordAvailable ? "Show password" : "Password hidden"}</button>` : ""}
+                                        </div>
+                                        ${currentUserRole === "admin" ? `<button class="secondary-button" type="button" onclick="openWorkerPasswordReset('${encodedAccountId}')" ${loginAccount ? "" : "disabled"}>Set password</button>` : `<span></span>`}
+                                        <button class="${workerStatus[worker] !== false ? "success-button" : "danger-button"}" onclick="toggleWorkerStatus('${worker}')">${workerStatus[worker] !== false ? "Active" : "Inactive"}</button>
+                                        <button class="danger-button" onclick="deleteWorkerAccount('${worker}')">Delete</button>
+                                    </div>
+                                `;
+                            }).join("")}
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    `;
+
+    setTimeout(() => {
+        const workerInput = document.getElementById("payrollWorker");
+        if (workerInput) loadPayrollDetails(workerInput.value);
+
+        const focusMap = {
+            team: "admin-team-section",
+            locations: "admin-locations-section",
+            salary: "admin-payroll-section",
+            warehouse: "admin-warehouse-section"
+        };
+        const sectionId = focusMap[currentAdminFocus];
+        if (sectionId) {
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+    }, 50);
+}
+
+function assignLocationToWorker() {
+    const worker = document.getElementById("assignLocationWorker")?.value;
+    const enteredLocation = String(document.getElementById("assignLocationValue")?.value || "").trim();
+
+    if (!worker || !enteredLocation) {
+        alert("Please select a worker and enter a location.");
+        return;
+    }
+
+    const existingLocation = locations.find(item => item.toLowerCase() === enteredLocation.toLowerCase());
+    const location = existingLocation || enteredLocation;
+    if (!existingLocation) locations.push(location);
+
+    selectedStaff = worker;
+    selectedLocation = location;
+    recordActivity("Worker assigned to location", {
+        worker,
+        location,
+        details: `${worker} assigned to ${location}`
+    });
+    saveData();
+    adminPage();
+    alert(`${worker} is assigned to ${location}.`);
+}
+
+function addIncentive() {
+    if (!hasAdminAccess()) return;
+    const title = document.getElementById("incentiveTitle")?.value.trim();
+    const amount = Number(document.getElementById("incentiveAmount")?.value || 0);
+    const targetSales = Number(document.getElementById("incentiveTargetSales")?.value || 0);
+    const note = document.getElementById("incentiveNote")?.value.trim();
+
+    if (!title) {
+        alert("Incentive title is required.");
+        return;
+    }
+
+    incentiveList.unshift({
+        id: Date.now(),
+        title,
+        amount: Number.isFinite(amount) ? Math.max(0, amount) : 0,
+        targetSales: Number.isFinite(targetSales) ? Math.max(0, targetSales) : 0,
+        note: note || "Worker reward"
+    });
+
+    saveData();
+    adminPage();
+    document.getElementById("incentiveTitle").value = "";
+    document.getElementById("incentiveAmount").value = "0";
+    document.getElementById("incentiveTargetSales").value = "0";
+    document.getElementById("incentiveNote").value = "";
+    recordActivity("Incentive added", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${title} • ${money(amount)}`
+    });
+}
+
+function removeIncentive(id) {
+    if (!hasAdminAccess()) return;
+    incentiveList = incentiveList.filter(item => item.id !== id);
+    saveData();
+    adminPage();
+}
+
+function toggleWorkerStatus(workerName) {
+    const currentStatus = workerStatus[workerName] !== false;
+    workerStatus[workerName] = !currentStatus;
+    saveData();
+    adminPage();
+    recordActivity("Worker status changed", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${workerName} ${workerStatus[workerName] ? "activated" : "deactivated"}`
+    });
+}
+
+function openWorkerPasswordReset(encodedAccountId) {
+    if (currentUserRole !== "admin") return;
+
+    let accountId;
+    try {
+        accountId = decodeURIComponent(encodedAccountId);
+    } catch {
+        return;
+    }
+
+    const account = authAccounts.find(item => item.id === accountId && ["worker", "manager"].includes(item.role));
+    if (!account) return;
+
+    const modal = document.getElementById("modal");
+    modal.innerHTML = `
+        <div class="modal-box">
+            <div class="section-header">
+                <h2>Set password for ${escapeHtml(account.workerName || account.username)}</h2>
+                <button class="secondary-button" type="button" onclick="closeModal()">Cancel</button>
+            </div>
+            <p>Login: ${escapeHtml(account.username || account.email || "Not set")}</p>
+            <form class="auth-form" onsubmit="saveWorkerPassword(event)">
+                <input type="hidden" name="accountId" value="${escapeHtml(account.id)}">
+                <div class="password-input">
+                    <input name="password" type="password" autocomplete="new-password" placeholder="New password (8 characters minimum)" minlength="8" required>
+                    <button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button>
+                </div>
+                <div class="password-input">
+                    <input name="confirmPassword" type="password" autocomplete="new-password" placeholder="Confirm new password" minlength="8" required>
+                    <button class="password-toggle" type="button" aria-label="Show password" aria-pressed="false" onclick="togglePasswordVisibility(this)">Show</button>
+                </div>
+                <div id="workerPasswordNotice" class="auth-notice" role="status"></div>
+                <button class="primary-button" type="submit">Update password</button>
+            </form>
+        </div>
+    `;
+    modal.classList.remove("hidden");
+}
+
+async function saveWorkerPassword(event) {
+    event.preventDefault();
+    if (currentUserRole !== "admin") return;
+
+    const data = new FormData(event.target);
+    const account = authAccounts.find(item => item.id === data.get("accountId") && ["worker", "manager"].includes(item.role));
+    const password = String(data.get("password") || "");
+    const confirmPassword = String(data.get("confirmPassword") || "");
+    const notice = document.getElementById("workerPasswordNotice");
+    const showError = message => {
+        notice.textContent = message;
+        notice.classList.add("visible");
+    };
+
+    if (!account) {
+        showError("This staff login was not found.");
+        return;
+    }
+    if (password.length < 8 || password !== confirmPassword) {
+        showError("Use at least 8 characters and make both passwords match.");
+        return;
+    }
+
+    try {
+        account.salt = createAuthSalt();
+        account.passwordHash = await hashAuthPassword(password, account.salt);
+        saveAuthAccounts();
+        recentlySetStaffPasswords.set(account.id, password);
+        recordActivity("Staff password reset", {
+            worker: account.workerName || account.username,
+            location: selectedLocation,
+            details: `Password reset for ${account.workerName || account.username}`
+        });
+        closeModal();
+        adminPage();
+        alert("Password updated. Share the new password with the staff member securely.");
+    } catch (error) {
+        showError(error.message || "Could not update the password.");
+    }
+}
+
+function toggleStaffPasswordVisibility(encodedAccountId, button) {
+    if (currentUserRole !== "admin") return;
+
+    const accountId = decodeURIComponent(encodedAccountId);
+    const password = recentlySetStaffPasswords.get(accountId);
+    const passwordElement = document.getElementById(`staff-password-${encodedAccountId}`);
+    if (!password || !passwordElement) return;
+
+    const shouldShow = passwordElement.hidden;
+    passwordElement.textContent = shouldShow ? `Password: ${password}` : "";
+    passwordElement.hidden = !shouldShow;
+    button.textContent = shouldShow ? "Hide password" : "Show password";
+    button.setAttribute("aria-pressed", String(shouldShow));
+}
+
+function deleteWorkerAccount(workerName) {
+    if (!confirm(`Delete worker ${workerName}?`)) return;
+
+    workers = workers.filter(item => item !== workerName);
+    delete workerProfiles[workerName];
+    delete workerStatus[workerName];
+    delete workerIds[workerName];
+    delete payrollRecords[workerName];
+
+    if (currentWorkerName === workerName) {
+        currentWorkerName = workers[0] || "Assistant";
+    }
+
+    saveData();
+    adminPage();
+    recordActivity("Worker deleted", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${workerName} removed from team`
+    });
+}
+
+function incentivesPage() {
+    if (!hasAdminAccess()) {
+        workerPage();
+        return;
+    }
+    document.body.classList.add("admin-workspace");
+    const totalIncentives = incentiveList.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    document.getElementById("app").innerHTML = `
+        <div class="admin-shell">
+            ${renderAdminSidebar("incentives")}
+            <main class="admin-main">
+                <div class="container">
+            <div class="section-header">
+                <h2>Incentives</h2>
+                <button class="secondary-button" onclick="adminPage()">← Back</button>
+            </div>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="card-title">Total Incentives</div>
+                    <div class="card-value">${money(totalIncentives)}</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Records</div>
+                    <div class="card-value">${incentiveList.length}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="panel">
+                    <h3>Add Incentive</h3>
+                    <div class="input-stack">
+                        <div class="inline-form">
+                            <div class="field">
+                                <label>Title</label>
+                                <input id="incentivePageTitle" placeholder="Bonus / Discount">
+                            </div>
+                            <div class="field">
+                                    <label>Payout Amount</label>
+                                <input id="incentivePageAmount" type="number" min="0" value="0">
+                            </div>
+                                <div class="field">
+                                    <label>Sales Target (₹)</label>
+                                    <input id="incentivePageTargetSales" type="number" min="0" value="0">
+                                </div>
+                            <div class="field">
+                                <label>Note</label>
+                                <input id="incentivePageNote" placeholder="Sales reward">
+                            </div>
+                            <button class="form-button" onclick="submitIncentiveFromPage()">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Incentive List</h2>
+                </div>
+                ${incentiveList.length ? incentiveList.map(item => `
+                    <div class="product">
+                        <div>
+                            <div class="product-name">${item.title}</div>
+                            <div class="product-info">${item.note || "Worker reward"}<br>Sales target: ${Number(item.targetSales || 0) > 0 ? money(item.targetSales) : "Not set"}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <strong>${money(item.amount)}</strong><br>
+                            <button class="danger-button" onclick="removeIncentive(${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join("") : `<div class="empty">No incentive added yet.</div>`}
+            </div>
+                </div>
+            </main>
+        </div>
+    `;
+}
+
+function submitIncentiveFromPage() {
+    if (!hasAdminAccess()) return;
+    const title = document.getElementById("incentivePageTitle")?.value.trim();
+    const amount = Number(document.getElementById("incentivePageAmount")?.value || 0);
+    const targetSales = Number(document.getElementById("incentivePageTargetSales")?.value || 0);
+    const note = document.getElementById("incentivePageNote")?.value.trim();
+
+    if (!title) {
+        alert("Incentive title is required.");
+        return;
+    }
+
+    incentiveList.unshift({
+        id: Date.now(),
+        title,
+        amount: Number.isFinite(amount) ? Math.max(0, amount) : 0,
+        targetSales: Number.isFinite(targetSales) ? Math.max(0, targetSales) : 0,
+        note: note || "Worker reward"
+    });
+
+    saveData();
+    incentivesPage();
+    recordActivity("Incentive added", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${title} • ${money(amount)}`
+    });
+}
+
+function paymentsPage() {
+    if (!hasAdminAccess()) return;
+
+    document.body.classList.add("admin-workspace");
+    if (!locations.includes(selectedCashCollectionLocation)) {
+        selectedCashCollectionLocation = locations[0] || "";
+    }
+
+    const cashCollection = getCashCollectionTotals();
+    const locationCash = getCashCollectionTotals(selectedCashCollectionLocation);
+    const cashSales = cashCollection.total;
+    const upiSales = sales.filter(sale => sale.payment === "upi").reduce((sum, sale) => sum + sale.total, 0);
+    const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
+
+    document.getElementById("app").innerHTML = `
+        <div class="admin-shell">
+            ${renderAdminSidebar("payments")}
+            <main class="admin-main">
+                <div class="container">
+            <div class="section-header">
+                <h2>Payments</h2>
+                <button class="secondary-button" onclick="adminPage()">← Back</button>
+            </div>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="card-title">Cash</div>
+                    <div class="card-value">${money(cashSales)}</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">UPI</div>
+                    <div class="card-value">${money(upiSales)}</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Collected Cash</div>
+                    <div class="card-value">${money(cashCollection.collected)}</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Uncollected Cash</div>
+                    <div class="card-value">${money(cashCollection.uncollected)}</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Lifetime Total</div>
+                    <div class="card-value">${money(totalRevenue)}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="card">
+                    <h3>Cash Handover</h3>
+                    <div class="field">
+                        <label for="cashCollectionLocation">LOCATION</label>
+                        <select id="cashCollectionLocation" onchange="selectedCashCollectionLocation=this.value; paymentsPage()">
+                            ${locations.map(location => `<option value="${location}" ${selectedCashCollectionLocation === location ? "selected" : ""}>${location}</option>`).join("")}
+                        </select>
+                    </div>
+                    <div class="field" style="margin-top:12px;">
+                        <label for="cashCollectionAmount">AMOUNT RECEIVED</label>
+                        <input id="cashCollectionAmount" type="number" min="0.01" max="${locationCash.uncollected}" step="0.01" placeholder="Enter cash collected">
+                        <small>Uncollected at this location: ${money(locationCash.uncollected)}</small>
+                    </div>
+                    <button class="primary-button" style="margin-top:12px;" onclick="collectCash('payments')">
+                        Record Cash Collected
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="panel">
+                    <h3>Payment Transactions</h3>
+                    ${sales.length ? sales.slice(0, 12).map(sale => `
+                        <div class="payment-item payment-transaction-row" style="margin-bottom:10px;">
+                            <div>
+                                <strong>${sale.productName}</strong><br>
+                                <small>${sale.location || "Unknown location"} • ${sale.staff || "Assistant"} • ${new Date(sale.time).toLocaleString()}</small>
+                            </div>
+                            <div class="payment-reference-column">
+                                <small>Payment ID</small>
+                                <strong>${sale.payment === "upi" ? escapeHtml(sale.paymentId || "Not recorded") : "Not applicable"}</strong>
+                                ${sale.payment === "upi" && sale.payerUpiId ? `<small>Paid from: ${escapeHtml(sale.payerUpiId)}</small>` : ""}
+                            </div>
+                            <div style="text-align:right;">
+                                <strong>${money(sale.total)}</strong><br>
+                                <span>${sale.payment.toUpperCase()}${sale.payment === "cash" ? ` • ${getCashSaleStatus(sale)}` : ""}</span>
+                            </div>
+                        </div>
+                    `).join("") : `<div class="empty">No payment records yet.</div>`}
+                </div>
+            </div>
+                </div>
+            </main>
+        </div>
+    `;
+}
+
+function addProduct() {
+    const nameInput = document.getElementById("newProductName");
+    const skuInput = document.getElementById("newProductSku");
+    const categoryInput = document.getElementById("newProductCategory");
+    const colorInput = document.getElementById("newProductColor");
+    const noInput = document.getElementById("newProductNo");
+    const quantityInput = document.getElementById("newProductQuantity");
+    const priceInput = document.getElementById("newProductPrice");
+
+    const name = (nameInput.value || "").trim().toUpperCase();
+    const sku = (skuInput.value || "").trim().toUpperCase();
+    const category = (categoryInput.value || "").trim().toUpperCase();
+    const color = (colorInput.value || "").trim().toUpperCase();
+    const productNo = (noInput.value || "").trim().toUpperCase();
+    const quantity = Number(quantityInput.value || 0);
+    const price = Number(priceInput.value || 0);
+
+    if (!name || !sku || !category) {
+        alert("Product name, SKU, and category are required.");
+        return;
+    }
+
+    if (!Number.isFinite(quantity) || quantity < 0) {
+        alert("Quantity sent must be a valid number.");
+        return;
+    }
+
+    if (products.some(product => product.sku === sku)) {
+        alert("This SKU already exists.");
+        return;
+    }
+
+    products.push({
+        id: Date.now(),
+        name,
+        category,
+        sku,
+        productNo: productNo || sku,
+        color: color || "UNKNOWN",
+        price: Number.isFinite(price) ? Math.max(0, price) : 0,
+        received: quantity,
+        working: quantity,
+        damaged: 0,
+        lastReceivedDate: ""
+    });
+
+    const newProduct = products[products.length - 1];
+    warehouseStock[newProduct.id] = quantity;
+    recordWarehouseMovement("received", newProduct, quantity, {
+        location: "Warehouse",
+        note: "Initial stock entry"
+    });
+
+    saveData();
+    adminPage();
+
+    nameInput.value = "";
+    skuInput.value = "";
+    categoryInput.value = "";
+    colorInput.value = "";
+    noInput.value = "";
+    quantityInput.value = "0";
+    priceInput.value = "0";
+
+    recordActivity("Product assigned", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${name} • ${sku} • ${quantity} sent • ${color || "UNKNOWN"} • ${money(price)}`
+    });
+}
+
+function updateProductPrice(productId, rawValue) {
+    const product = products.find(item => item.id == productId);
+    if (!product) return;
+
+    const value = Number(rawValue);
+    product.price = Number.isFinite(value) ? Math.max(0, value) : 0;
+    saveData();
+}
+
+function saveInventoryChanges(productId) {
+    const product = products.find(item => item.id == productId);
+    if (!product) return;
+
+    const name = String(document.getElementById(`inventory-name-${productId}`)?.value || "").trim();
+    const sku = String(document.getElementById(`inventory-sku-${productId}`)?.value || "").trim().toUpperCase();
+    const category = String(document.getElementById(`inventory-category-${productId}`)?.value || "").trim().toUpperCase();
+
+    if (!name) {
+        alert("Inventory name cannot be empty.");
+        return;
+    }
+
+    const duplicateSku = products.some(
+        item => item.id != productId && item.sku.toUpperCase() === sku && sku
+    );
+
+    if (duplicateSku) {
+        alert("This SKU already exists for another inventory item.");
+        return;
+    }
+
+    const previousName = product.name;
+    product.name = name;
+    product.sku = sku || product.sku;
+    product.category = category || product.category;
+
+    saveData();
+    adminPage();
+    recordActivity("Inventory updated", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${previousName} → ${product.name} • ${product.sku}`
+    });
+    alert("Inventory item updated successfully.");
+}
+
+function deleteProduct(productId) {
+    const product = products.find(item => item.id == productId);
+    if (!product) return;
+
+    const confirmDelete = confirm(`Delete "${product.name}" from inventory?`);
+    if (!confirmDelete) return;
+
+    products = products.filter(item => item.id != productId);
+    sales = sales.filter(sale => sale.productId != productId);
+    inventoryRequests = inventoryRequests.filter(request => request.productId != productId);
+
+    if (selectedProduct == productId) {
+        selectedProduct = "";
+        selectedQuantity = 1;
+    }
+
+    saveData();
+    adminPage();
+    recordActivity("Inventory removed", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${product.name} • ${product.sku}`
+    });
+    alert("Inventory item deleted.");
+}
+
+async function addWorker(event) {
+    event.preventDefault();
+    if (currentUserRole !== "admin") {
+        alert("Only the administrator can create staff accounts.");
+        return;
+    }
+    const data = new FormData(event.target);
+    const name = String(data.get("name") || "").trim();
+    const username = String(data.get("username") || "").trim().toLowerCase();
+    const role = data.get("role") === "manager" ? "manager" : "worker";
+    const password = String(data.get("password") || "");
+    if (!name || !username || password.length < 8) {
+        alert("Enter a name, username, and password with at least 8 characters.");
+        return;
+    }
+    if (workers.includes(name) || authAccounts.some(account => account.username?.toLowerCase() === username)) {
+        alert("That name or username is already in use.");
+        return;
+    }
+
+    try {
+        const salt = createAuthSalt();
+        const account = {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            role,
+            workerName: name,
+            username,
+            salt,
+            passwordHash: await hashAuthPassword(password, salt),
+            createdAt: new Date().toISOString()
+        };
+        authAccounts.push(account);
+        workers.push(name);
+        workerProfiles[name] = role === "manager" ? "manager" : "assistant";
+        workerStatus[name] = true;
+        workerIds[name] = `W-${String(workers.length).padStart(3, "0")}`;
+        selectedStaff = name;
+        saveAuthAccounts();
+        saveData();
+        recordActivity("Staff login created", {
+            worker: name,
+            location: selectedLocation,
+            details: `${name} added as ${role === "manager" ? "Manager" : "Assistant"}`
+        });
+        adminPage();
+    } catch (error) {
+        alert(error.message || "Could not create the staff login.");
+    }
+}
+
+function assignWorkerProfile() {
+    const workerName = document.getElementById("assignWorkerName")?.value;
+    const profileValue = document.getElementById("assignWorkerProfile")?.value;
+
+    if (!workerName) {
+        alert("Please select a worker.");
+        return;
+    }
+
+    workerProfiles[workerName] = profileValue;
+    saveData();
+    adminPage();
+    recordActivity("Worker profile assigned", {
+        worker: selectedStaff,
+        location: selectedLocation,
+        details: `${workerName} assigned as ${profileValue === "manager" ? "Manager" : "Assistant"}`
+    });
+    alert(`${workerName} is now assigned as ${profileValue === "manager" ? "Manager" : "Assistant"}.`);
+}
+
+function addLocation() {
+    if (!hasAdminAccess()) return;
+    const input = document.getElementById("newLocationName");
+    const value = input.value.trim();
+
+    if (!value) {
+        alert("Enter a location name.");
+        return;
+    }
+
+    if (!locations.includes(value)) {
+        locations.push(value);
+        selectedLocation = value;
+        recordActivity("Location added", {
+            worker: selectedStaff,
+            location: value,
+            details: { details: `New sales location registered: ${value}` }
+        });
+        saveData();
+        adminPage();
+    } else {
+        alert("This location already exists.");
+    }
+
+    input.value = "";
+}
+
+function salesPage() {
+
+    const visibleSales = currentUserRole === "worker"
+        ? sales.filter(sale => (sale.staff || "Assistant") === currentWorkerName)
+        : sales;
+
+    document.getElementById("app").innerHTML = `
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <h2>
+                ${currentUserRole === "worker" ? "My Sales History" : "Sales History"}
+            </h2>
+
+            <button class="secondary-button" onclick="goBack()">← Back</button>
+
+        </div>
+
+        ${
+            visibleSales.length
+            ? visibleSales.map(
+                sale => `
+
+                <div class="product">
+
+                    <div>
+
+                        <div class="product-name">
+
+                            ${sale.productName}
+
+                            ×
+
+                            ${sale.quantity}
+
+                        </div>
+
+                        <div class="product-info">
+
+                            ${new Date(
+                                sale.time
+                            ).toLocaleString()}
+
+                            <br>
+
+                            Sold by:
+                            ${sale.staff || "Assistant"}
+
+                            <br>
+
+                            Location:
+                            ${sale.location || "Main Store"}
+
+                        </div>
+
+                        <span class="badge green">
+
+                            ${sale.payment.toUpperCase()}
+
+                        </span>
+
+                    </div>
+
+                    <strong>
+
+                        ${money(sale.total)}
+
+                    </strong>
+
+                </div>
+
+                `
+            ).join("")
+            : `
+
+            <div class="empty">
+
+                No sales yet.
+
+            </div>
+
+            `
+        }
+
+    </div>
+
+    `;
+}
+
+function moneyPage() {
+    if (!locations.includes(selectedCashCollectionLocation)) {
+        selectedCashCollectionLocation = locations[0] || "";
+    }
+
+    const cashCollection = getCashCollectionTotals();
+    const locationCash = getCashCollectionTotals(selectedCashCollectionLocation);
+
+    const cash = cashCollection.total;
+
+    const upi =
+        sales
+        .filter(
+            sale =>
+                sale.payment === "upi"
+        )
+        .reduce(
+            (a,s) =>
+                a+s.total,
+            0
+        );
+
+    const pending = cashCollection.uncollected;
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+    <div class="container">
+
+        <div class="section-header">
+            <h2>Cash & UPI</h2>
+            <button class="secondary-button" onclick="goBack()">← Back</button>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <div class="card-title">
+                    Cash Sales
+                </div>
+
+                <div class="card-value">
+                    ${money(cash)}
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-title">
+                    UPI Sales
+                </div>
+
+                <div class="card-value">
+                    ${money(upi)}
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-title">
+                    Collected Cash
+                </div>
+
+                <div class="card-value">
+                    ${money(cashCollection.collected)}
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-title">
+                    Uncollected Cash
+                </div>
+
+                <div class="card-value">
+                    ${money(pending)}
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-title">
+                    Total
+                </div>
+
+                <div class="card-value">
+                    ${money(cash + upi)}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="card">
+
+                <h3>
+                    Cash Handover
+                </h3>
+
+                <p style="color:#777">
+
+                    Mark the cash as collected
+                    after the assistant gives
+                    it to the owner/cashier.
+
+                </p>
+
+                <div class="field">
+                    <label for="cashCollectionLocation">LOCATION</label>
+                    <select id="cashCollectionLocation" onchange="selectedCashCollectionLocation=this.value; moneyPage()">
+                        ${locations.map(location => `<option value="${location}" ${selectedCashCollectionLocation === location ? "selected" : ""}>${location}</option>`).join("")}
+                    </select>
+                </div>
+
+                <div class="field" style="margin-top:12px;">
+                    <label for="cashCollectionAmount">AMOUNT RECEIVED</label>
+                    <input id="cashCollectionAmount" type="number" min="0.01" max="${locationCash.uncollected}" step="0.01" placeholder="Enter cash collected">
+                    <small>Uncollected at this location: ${money(locationCash.uncollected)}</small>
+                </div>
+
+                <button
+                    class="primary-button"
+                    onclick="collectCash()">
+
+                    Record Cash Collected
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    `;
+}
+
+function collectCash(returnPage = "money") {
+    const location = selectedCashCollectionLocation;
+    const amountInput = document.getElementById("cashCollectionAmount")?.value;
+    const requestedAmount = Math.round(Number(amountInput) * 100) / 100;
+    const locationTotals = getCashCollectionTotals(location);
+
+    if (amountInput === "" || !Number.isFinite(requestedAmount) || requestedAmount <= 0) {
+        alert("Enter the amount of cash received.");
+        return;
+    }
+
+    if (requestedAmount > locationTotals.uncollected + 0.000001) {
+        alert(`Amount exceeds the uncollected cash at ${location}.`);
+        return;
+    }
+
+    const pendingSales = sales.filter(sale =>
+        sale.payment === "cash" &&
+        !sale.cashCollected &&
+        sale.location === location &&
+        Number(sale.total || 0) > Number(sale.cashCollectedAmount || 0)
+    ).sort((first, second) => new Date(first.time) - new Date(second.time));
+
+    if (!pendingSales.length) {
+        alert(`No uncollected cash for ${location || "this location"}.`);
+        return;
+    }
+
+    const collectedAt = new Date().toISOString();
+    let amountRemaining = requestedAmount;
+    for (const sale of pendingSales) {
+        if (amountRemaining <= 0) break;
+        const saleTotal = Number(sale.total || 0);
+        const alreadyCollected = Number(sale.cashCollectedAmount || 0);
+        const amountForSale = Math.min(saleTotal - alreadyCollected, amountRemaining);
+        sale.cashCollectedAmount = alreadyCollected + amountForSale;
+        amountRemaining -= amountForSale;
+
+        if (sale.cashCollectedAmount >= saleTotal - 0.005) {
+            sale.cashCollectedAmount = saleTotal;
+            sale.cashCollected = true;
+            sale.cashCollectedAt = collectedAt;
+        }
+    }
+
+    recordActivity("Cash collected", {
+        worker: selectedStaff,
+        location,
+        details: `${money(requestedAmount)} collected from ${location}`
+    });
+
+    if (returnPage === "payments") {
+        paymentsPage();
+    } else {
+        moneyPage();
+    }
+
+    alert(`${money(requestedAmount)} cash collected from ${location}.`);
+}
+
+function closeModal() {
+    if (upiTimerId) {
+        clearInterval(upiTimerId);
+        upiTimerId = null;
+    }
+    upiPaymentDeadline = 0;
+
+    document
+        .getElementById("modal")
+        .classList.add("hidden");
+
+}
+
+const THEME_KEY = "inventoryTheme";
+
+function applyTheme(theme) {
+    const isDark = theme === "dark";
+    document.body.classList.toggle("theme-dark", isDark);
+    document.body.classList.toggle("theme-light", !isDark);
+    document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+    localStorage.setItem(THEME_KEY, theme);
+}
+
+function setTheme(theme) {
+    applyTheme(theme);
+    if (document.getElementById("modal") && !document.getElementById("modal").classList.contains("hidden")) {
+        openSettings();
+    }
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function savePaymentSettings(event) {
+    event.preventDefault();
+    if (currentUserRole !== "admin") return;
+
+    const data = new FormData(event.target);
+    const upiId = String(data.get("upiPaymentId") || "").trim();
+    const payeeName = String(data.get("upiPayeeName") || "").trim();
+    const duration = Number(data.get("upiQrDurationMinutes"));
+    if (!/^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+$/.test(upiId)) {
+        const notice = document.getElementById("paymentSettingsNotice");
+        notice.textContent = "Enter a valid UPI ID or Razorpay UPI VPA, such as name@bank.";
+        notice.classList.add("visible");
+        return;
+    }
+
+    if (!payeeName) {
+        const notice = document.getElementById("paymentSettingsNotice");
+        notice.textContent = "Enter the account or business name that should appear on the payment QR.";
+        notice.classList.add("visible");
+        return;
+    }
+
+    upiPaymentId = upiId;
+    upiPayeeName = payeeName;
+    paymentBankName = String(data.get("paymentBankName") || "").trim();
+    paymentAccountHolder = String(data.get("paymentAccountHolder") || "").trim();
+    paymentAccountNumber = String(data.get("paymentAccountNumber") || "").trim();
+    paymentIfscCode = String(data.get("paymentIfscCode") || "").trim().toUpperCase();
+    upiQrDurationMinutes = duration === 5 ? 5 : 3;
+
+    localStorage.setItem("upiPaymentId", upiPaymentId);
+    localStorage.setItem("upiPayeeName", upiPayeeName);
+    localStorage.setItem("paymentBankName", paymentBankName);
+    localStorage.setItem("paymentAccountHolder", paymentAccountHolder);
+    localStorage.setItem("paymentAccountNumber", paymentAccountNumber);
+    localStorage.setItem("paymentIfscCode", paymentIfscCode);
+    localStorage.setItem("upiQrDurationMinutes", String(upiQrDurationMinutes));
+
+    softwarePage();
+    const notice = document.getElementById("paymentSettingsNotice");
+    if (notice) {
+        notice.textContent = "Payment details saved.";
+        notice.classList.add("visible");
+    }
+}
+
+function openSettings() {
+    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("modal").innerHTML = `
+        <div class="modal-box">
+            <div class="section-header">
+                <h2>Settings</h2>
+                <button
+                    onclick="closeModal()"
+                    style="border:none;background:none;color:var(--muted);">
+                    Close
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="section-header" style="margin-bottom:0;">
+                    <h2 style="margin:0;">Theme</h2>
+                </div>
+                <div class="payment" style="margin-top:10px">
+                    <button class="${localStorage.getItem(THEME_KEY) === "dark" ? "selected" : ""}" onclick="setTheme('dark')">🌙 Dark</button>
+                    <button class="${localStorage.getItem(THEME_KEY) === "light" || !localStorage.getItem(THEME_KEY) ? "selected" : ""}" onclick="setTheme('light')">☀️ White</button>
+                </div>
+            </div>
+
+            <div class="section" style="display:flex;flex-direction:column;gap:10px;">
+                ${hasAdminAccess() ? `<button class="primary-button" onclick="openAdminPanel()">${currentUserRole === "manager" ? "Manager Dashboard" : "Admin Panel"}</button>` : ``}
+                <button class="secondary-button" onclick="resetApp()">
+                    Reset Demo Data
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function goBack() {
+    if (currentUserRole === "worker") {
+        showPage("worker");
+        return;
+    }
+
+    showPage("home");
+}
+
+function openAdminPanel() {
+    closeModal();
+    showPage("admin");
+}
+
+function resetApp() {
+
+    const answer =
+        confirm(
+            "Reset all demo data?"
+        );
+
+    if (!answer) return;
+
+    localStorage.removeItem(
+        "products"
+    );
+
+    localStorage.removeItem(
+        "sales"
+    );
+
+    localStorage.removeItem(
+        "locations"
+    );
+
+    localStorage.removeItem(
+        "workers"
+    );
+
+    localStorage.removeItem(
+        "activityLog"
+    );
+
+    localStorage.removeItem(
+        "inventoryRequests"
+    );
+
+    localStorage.removeItem(
+        "workerProfiles"
+    );
+
+    localStorage.removeItem(
+        "workerStatus"
+    );
+
+    localStorage.removeItem(
+        "workerIds"
+    );
+
+    localStorage.removeItem(
+        "incentives"
+    );
+
+    localStorage.removeItem("payrollRecords");
+    localStorage.removeItem("payrollHistory");
+
+    localStorage.removeItem(
+        "sessionUser"
+    );
+
+    localStorage.removeItem("authAccounts");
+    localStorage.removeItem("authSession");
+
+    localStorage.removeItem(THEME_KEY);
+
+    location.reload();
+
+}
+
+const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+applyTheme(savedTheme);
+updateBottomNav();
+ensureAuthData();
+restoreAuthSession();
+
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        let reloadingForUpdate = false;
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (reloadingForUpdate) return;
+            reloadingForUpdate = true;
+            window.location.reload();
+        });
+
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(registration => registration.update())
+            .catch(error => console.warn("Offline app support is unavailable.", error));
+    });
+}
+</script>
+
+</body>
+</html>
